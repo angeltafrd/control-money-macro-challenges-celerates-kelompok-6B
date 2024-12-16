@@ -1,0 +1,683 @@
+body {
+  font-family: "DM Sans", sans-serif;
+  background: linear-gradient(135deg, #3b008a, #7f31d4);
+  color: white;
+  min-height: 100vh;
+  width: 100%;
+  max-width: 1440px;
+  margin: 0 auto;
+  overflow-x: hidden;
+}
+
+.background-shape1,
+.background-shape2,
+.background-shape3 {
+  filter: blur(200px);
+  position: absolute;
+  z-index: -1;
+}
+
+.background-shape1 {
+  width: 700px;
+  height: 500px;
+  background: #ba24d5;
+  border-radius: 50%;
+  top: -200px;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.background-shape2 {
+  width: 458px;
+  height: 458px;
+  background: #6938ef;
+  box-shadow: 0px 0px 50px rgba(105, 56, 239, 0.5);
+  border-radius: 458px;
+  top: 50%;
+  left: -200px;
+  transform: translateY(-50%);
+}
+
+.background-shape3 {
+  width: 458px;
+  height: 458px;
+  background: #37156f;
+  box-shadow: 0px 0px 50px rgba(105, 56, 239, 0.5);
+  border-radius: 1000px;
+  top: 80%;
+  right: -200px;
+  transform: translateY(-50%);
+}
+
+.hero {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 50px;
+  max-width: 1440px;
+  margin: 0 auto;
+  height: 500px;
+  text-align: center;
+}
+
+.hero-content {
+  max-width: 600px;
+  margin-bottom: 30px;
+}
+
+.hero-content h1 {
+  font-size: 2.5rem;
+  margin-bottom: 20px;
+}
+
+.hero-content p {
+  margin-bottom: 30px;
+  font-size: 1.1rem;
+  text-align: center;
+}
+
+.start-btn {
+  background-color: #3b008a;
+  padding: 15px 30px;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  font-size: 1.1rem;
+  cursor: pointer;
+}
+
+.card-image img {
+  width: 400px;
+  max-width: 100%;
+  height: auto;
+}
+
+.container {
+  background-color: rgba(255, 255, 255, 0.2);
+  width: 100%;
+  max-width: 1200px;
+  margin: 50px auto;
+  padding: 20px;
+  color: white;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  border-radius: 10px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 30px;
+}
+
+.title {
+  text-align: center;
+  color: white;
+  font-size: 24px;
+  margin-bottom: 20px;
+}
+
+.tips {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 30px;
+  margin-top: 30px;
+  align-content: flex-start;
+}
+
+.column {
+  width: 48%;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.tip {
+  border-radius: 10px;
+  padding: 15px;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  height: 150px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  color: black;
+  width: 100%;
+  text-align: center;
+}
+
+.color-1 {
+  background-color: #eed1fb;
+}
+
+.color-2 {
+  background-color: #fef0c7;
+}
+
+.color-3 {
+  background-color: #eeefce;
+}
+
+.color-4 {
+  background-color: #e2dafb;
+}
+
+.tip h3 {
+  font-size: 20px;
+  margin: 0 0 5px 0;
+}
+
+.tip p {
+  font-size: 18px;
+  margin: 0;
+  color: #000000;
+}
+
+.imagetip1-container,
+.imagetip2-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 20px;
+}
+
+.tips2 {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 30px;
+  gap: 20px;
+}
+
+#tab1 {
+  display: none;
+}
+
+.tab-active {
+  display: block;
+}
+
+.containersaldo {
+  margin-top: calc(53px + 30px);
+  padding-bottom: 100px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  min-height: calc(100vh - 200px);
+  gap: 20px;
+  overflow-y: auto;
+}
+
+.saldo {
+  background: rgba(255, 255, 255, 0.3);
+  width: 516px;
+  padding: 19px 41px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  border-radius: 10px;
+  box-shadow: 0px 170px 48px 0px rgba(0, 0, 0, 0), 0px 109px 44px 0px rgba(0, 0, 0, 0.02), 0px 61px 37px 0px rgba(0, 0, 0, 0.07), 0px 27px 27px 0px rgba(0, 0, 0, 0.11), 0px 4px 10px rgba(0, 0, 0, 0.2);
+}
+
+.saldo h2 {
+  text-align: center;
+  align-self: center;
+  margin-right: auto;
+  margin-left: 60px;
+}
+.saldo p {
+  text-align: center;
+  align-items: center;
+}
+
+.daftar-dompet {
+  margin-top: 10px;
+  text-align: left;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.item-dompet {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: rgba(255, 255, 255, 0.2);
+  padding: 20px;
+  margin: 8px 0;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background 0.3s;
+  width: 1200px;
+  max-width: 1400px;
+  box-sizing: border-box;
+}
+
+.item-dompet span#saldo-BCA,
+.item-dompet span#saldo-BRI,
+.item-dompet span#saldo-DANA,
+.item-dompet i {
+  margin-left: 8px;
+}
+
+.item-dompet i {
+  color: white;
+  font-size: 16px;
+  margin-left: auto;
+}
+
+.item-dompet span:first-child {
+  flex: 1;
+  text-align: left;
+}
+
+#saldo-BCA,
+#saldo-BRI,
+#saldo-DANA {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  text-align: flex-end;
+}
+
+.tambah-dompet {
+  text-align: center;
+  cursor: pointer;
+  font-size: 24px;
+  color: white;
+  padding-bottom: 100px;
+}
+
+.wadah-form {
+  display: flex;
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: #6a00ff;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+  z-index: 1000;
+  width: 300px;
+}
+
+.form h3 {
+  margin-bottom: 10px;
+}
+
+.form input {
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 10px;
+  border: none;
+  border-radius: 5px;
+  background: rgba(255, 255, 255, 0.1);
+  color: white;
+}
+
+.form button {
+  width: 100%;
+  padding: 10px;
+  border: none;
+  border-radius: 5px;
+  background: #4b00b3;
+  color: white;
+  font-size: 16px;
+  margin-top: 5px;
+}
+@media (max-width: 1200px) {
+  .hero {
+    padding: 50px;
+    height: auto;
+  }
+
+  .hero-content h1 {
+    font-size: 3rem;
+    line-height: 1.2;
+  }
+
+  .hero-content p {
+    font-size: 1.2rem;
+    line-height: 1.5;
+  }
+
+  .start-btn {
+    padding: 20px 40px;
+    font-size: 1.2rem;
+    border-radius: 10px;
+  }
+
+  .card-image img {
+    width: 60%;
+    margin-bottom: 30px;
+  }
+
+  .tip {
+    width: 80%;
+    margin: 10px auto;
+  }
+
+  .imagetip1-container,
+  .imagetip2-container {
+    flex-direction: row;
+    gap: 20px;
+    align-items: center;
+  }
+
+  .tip h3 {
+    font-size: 16px;
+  }
+
+  .tip p {
+    font-size: 13px;
+    padding: auto;
+  }
+
+  .saldo {
+    width: 500px;
+    padding: 20px;
+    text-align: center;
+    font-size: 1.2rem;
+  }
+
+  .daftar-dompet {
+    margin-top: 20px;
+    text-align: left;
+    width: 900px;
+  }
+
+  .item-dompet {
+    justify-content: space-between;
+    width: 90%;
+    margin: 15px;
+    padding: 20px;
+    display: flex;
+    border-radius: 10px;
+  }
+
+  .item-dompet i {
+    font-size: 22px;
+  }
+
+  .tambah-dompet {
+    font-size: 24px;
+    padding-bottom: 50px;
+    text-align: center;
+  }
+}
+
+@media (max-width: 1000px) {
+  .hero {
+    padding: 30px;
+    height: auto;
+  }
+
+  .hero-content h1 {
+    font-size: 1.8rem;
+  }
+
+  .hero-content p {
+    font-size: 0.9rem;
+  }
+
+  .start-btn {
+    padding: 12px 25px;
+    font-size: 1rem;
+  }
+
+  .card-image img {
+    width: 100%;
+    margin-bottom: 20px;
+  }
+
+  .tip {
+    width: 100%;
+    margin: 10px 0;
+  }
+
+  .imagetip1-container,
+  .imagetip2-container {
+    flex-direction: column-reverse;
+    gap: 10px;
+  }
+
+  .tip h3 {
+    font-size: 14px;
+  }
+
+  .tip p {
+    font-size: 10px;
+  }
+  .saldo {
+    width: 400px;
+    padding: 15px;
+    text-align: center;
+  }
+
+  .daftar-dompet {
+    margin-top: 15px;
+    text-align: center;
+    width: 90%;
+  }
+
+  .item-dompet {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    margin: 10px 0;
+    padding: 12px;
+    align-items: center;
+  }
+
+  .item-dompet i {
+    font-size: 18px;
+  }
+
+  .tambah-dompet {
+    font-size: 20px;
+    padding-bottom: 40px;
+  }
+}
+@media (min-width: 481px) and (max-width: 700px) {
+  .hero {
+    padding: 20px;
+    height: auto;
+  }
+
+  .hero-content h1 {
+    font-size: 1.6rem;
+    text-align: center;
+  }
+
+  .hero-content p {
+    font-size: 0.85rem;
+    text-align: center;
+  }
+
+  .start-btn {
+    padding: 10px 20px;
+    font-size: 0.9rem;
+    width: 100%;
+    text-align: center;
+  }
+
+  .card-image img {
+    width: 100%;
+    margin-bottom: 15px;
+  }
+
+  .container {
+    padding: 15px;
+  }
+
+  .tips {
+    display: block;
+    margin-top: 20px;
+  }
+
+  .column {
+    width: 100%;
+    margin-bottom: 15px;
+  }
+
+  .tip {
+    width: 90%;
+    padding: 15px;
+  }
+
+  .imagetip1-container,
+  .imagetip2-container {
+    display: none;
+  }
+
+  .tip h3 {
+    font-size: 14px;
+  }
+
+  .tip p {
+    font-size: 11px;
+  }
+
+  .saldo {
+    width: 400px;
+    padding: 15px;
+    text-align: center;
+  }
+
+  .daftar-dompet {
+    margin-top: 15px;
+    text-align: center;
+    width: 600px;
+  }
+
+  .item-dompet {
+    width: 90%;
+    margin: 10px 0;
+    padding: 12px;
+  }
+
+  .item-dompet i {
+    font-size: 18px;
+  }
+
+  .tambah-dompet {
+    font-size: 20px;
+    padding-bottom: 40px;
+  }
+
+  .wadah-form {
+    width: 90%;
+    padding: 15px;
+  }
+
+  .form input,
+  .form button {
+    width: 100%;
+    padding: 10px;
+    font-size: 14px;
+  }
+}
+
+@media (max-width: 480px) {
+  .hero {
+    padding: 20px;
+    height: auto;
+  }
+
+  .hero-content h1 {
+    font-size: 1.6rem;
+    text-align: center;
+  }
+
+  .hero-content p {
+    font-size: 0.85rem;
+    text-align: center;
+  }
+
+  .start-btn {
+    padding: 10px 20px;
+    font-size: 0.9rem;
+    width: 100%;
+    text-align: center;
+  }
+
+  .card-image img {
+    width: 100%;
+    margin-bottom: 15px;
+  }
+
+  .container {
+    padding: 15px;
+  }
+
+  .tips {
+    display: block;
+    margin-top: 20px;
+  }
+
+  .column {
+    width: 100%;
+    margin-bottom: 15px;
+  }
+
+  .tip {
+    width: 100%;
+    margin: 10px 0;
+    padding: 15px;
+  }
+
+  .imagetip1-container,
+  .imagetip2-container {
+    display: none;
+    flex-direction: column;
+    gap: 15px;
+  }
+
+  .tip h3 {
+    font-size: 15px;
+  }
+
+  .tip p {
+    font-size: 11px;
+  }
+
+  .saldo {
+    width: 60%;
+    padding: 15px;
+    text-align: center;
+  }
+
+  .daftar-dompet {
+    margin-top: 15px;
+    text-align: center;
+    width: 600px;
+  }
+
+  .item-dompet {
+    width: 60%;
+    margin: 10px 0;
+    padding: 12px;
+  }
+
+  .item-dompet i {
+    font-size: 18px;
+  }
+
+  .tambah-dompet {
+    font-size: 20px;
+    padding-bottom: 40px;
+  }
+
+  .wadah-form {
+    width: 90%;
+    padding: 15px;
+  }
+
+  .form input,
+  .form button {
+    width: 100%;
+    padding: 10px;
+    font-size: 14px;
+  }
+}

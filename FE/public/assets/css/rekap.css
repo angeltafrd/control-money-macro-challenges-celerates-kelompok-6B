@@ -1,0 +1,866 @@
+/*rekap*/
+.headerrekap {
+  position: relative;
+  background: url("/assets/images/Rekap.png") no-repeat center center;
+  background-size: 100%; /* Membuat gambar latar belakang lebih besar */
+  padding: 60px 20px;
+  text-align: center;
+  color: #fff;
+  overflow: hidden;
+  text-align: left;
+  height: 350px;
+}
+
+.headerrekap::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(55, 21, 111, 0.6);
+  z-index: 1;
+}
+
+.headerrekap h1 {
+  position: relative;
+  z-index: 2;
+  margin: 0;
+  white-space: normal;
+  word-wrap: break-word;
+  text-align: left;
+  max-width: 80%;
+  padding-left: 20px;
+  margin-top: 40px;
+}
+
+.cardsrekap {
+  display: flex;
+  justify-content: center;
+  margin: -120px 20px 20px;
+}
+
+.cardrekap {
+  width: 200px;
+  background: linear-gradient(to bottom, #6a00ff, #b300ff);
+  border-radius: 10px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  color: white;
+  text-align: center;
+  margin: 0 40px;
+  padding: 20px;
+  position: relative;
+  z-index: 10;
+  box-sizing: border-box;
+  height: auto;
+}
+
+.cardrekap img {
+  width: 120px;
+  height: 120px;
+  margin-bottom: 30px;
+}
+
+.cardrekap p a {
+  background-color: #f0f0f0;
+  color: #000;
+  width: 100%;
+  padding: 10px 20px;
+  border-radius: 0 0 10px 10px;
+  text-align: center;
+  margin-top: 40px;
+  margin-right: 15px;
+  font-size: 20px;
+  font-weight: bold;
+  text-decoration: none;
+}
+
+.content-background-rekap {
+  background: #d5b6eb;
+  height: calc(100vh - 350px);
+  width: 100%;
+  position: relative;
+  top: -150px;
+  z-index: 1;
+}
+
+.container-rekap {
+  position: relative;
+  max-width: 400px;
+  max-height: 500px;
+  margin: 20px auto;
+  margin-left: 250px;
+  padding: 20px;
+  background: #d9d9d9a1;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.image-rekap {
+  float: right;
+  margin-left: 200px;
+  margin-top: -300px;
+  margin-right: 330px;
+  width: 280px;
+  height: auto;
+}
+
+.saldo-container-rekap {
+  text-align: center;
+  background: rgba(55, 21, 111, 0.89);
+  color: white;
+  padding: 20px;
+  border-radius: 10px 10px 0 0;
+}
+
+.saldo-title-rekap {
+  font-size: 14px;
+  margin-bottom: 10px;
+  margin-right: 30px;
+}
+
+.saldo-amount-rekap {
+  font-size: 24px;
+  font-weight: bold;
+  margin-right: 30px;
+}
+
+.transaction-summary-rekap {
+  display: flex;
+  justify-content: space-between;
+  padding: 20px;
+}
+
+.transaction-box-rekap {
+  flex: 1;
+  width: 550px;
+  height: 110px;
+  text-align: center;
+  background-color: #e3d9fb;
+  border-radius: 8px;
+  padding: 10px;
+  margin: 0 10px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.transaction-icon-rekap {
+  font-size: 20px;
+  margin-bottom: 5px;
+}
+
+.transaction-label-rekap {
+  font-size: 12px;
+  color: #666;
+  margin-bottom: 5px;
+  margin-right: 20px;
+}
+
+.transaction-amount-rekap {
+  font-size: 18px;
+  font-weight: bold;
+  margin-right: 30px;
+}
+
+.transaction-amount-out-rekap {
+  color: #e63946;
+  margin-right: 0px;
+  margin-left: -10px;
+}
+
+.transaction-amount-in-rekap {
+  color: #2a9d8f;
+  margin-right: 0px;
+  margin-left: -10px;
+}
+
+h2 {
+  font-size: 24px;
+  margin-bottom: 20px;
+  padding-left: 100px;
+}
+
+.table-hari {
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  overflow: hidden;
+  padding: 20px;
+  border-collapse: separate;
+  border-spacing: 0 10px;
+  margin: -40px auto 40px;
+}
+
+.th-hari,
+.td-hari {
+  padding: 15px;
+  text-align: center;
+}
+
+.th-hari {
+  background-color: rgba(141, 106, 224, 0.85);
+  color: #ffffff;
+}
+
+.th-hari:first-child {
+  border-top-left-radius: 10px;
+}
+
+.th-hari:last-child {
+  border-top-right-radius: 10px;
+}
+
+.td-hari {
+  background-color: white;
+  color: black;
+  border-bottom: 1px solid #ddd;
+}
+
+.td-hari:first-child {
+  border-bottom-left-radius: 10px;
+  border-top-left-radius: 10px;
+}
+
+.td-hari:last-child {
+  border-bottom-right-radius: 10px;
+  border-top-right-radius: 10px;
+  text-align: center;
+}
+
+.tr-hari:last-child .td-hari {
+  border-bottom: none;
+}
+
+.container-bulan {
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  overflow: hidden;
+  padding: 20px;
+}
+
+.header-bulan {
+  background-color: rgba(141, 106, 224, 0.85);
+  color: #ffffff;
+  text-align: center;
+  padding: 10px;
+  font-size: 18px;
+  position: relative;
+  border-radius: 10px;
+}
+
+.header-bulan i {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  cursor: pointer;
+}
+
+.header-bulan .prev-bulan {
+  left: 10px;
+}
+
+.header-bulan .next-bulan {
+  right: 10px;
+}
+
+table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0 10px;
+}
+
+th,
+td {
+  padding: 10px;
+  text-align: center;
+}
+
+th {
+  background-color: rgba(141, 106, 224, 0.85);
+  color: #ffffff;
+}
+
+th:first-child {
+  border-top-left-radius: 10px;
+}
+
+th:last-child {
+  border-top-right-radius: 10px;
+}
+
+th:first-child,
+td:first-child {
+  border-bottom-left-radius: 10px;
+}
+
+th:last-child,
+td:last-child {
+  border-bottom-right-radius: 10px;
+}
+
+td:first-child {
+  border-bottom-left-radius: 10px;
+}
+
+td:last-child {
+  border-bottom-right-radius: 10px;
+}
+
+tr:first-child td:first-child {
+  border-top-left-radius: 10px;
+}
+
+tr:first-child td:last-child {
+  border-top-right-radius: 10px;
+}
+
+tr:last-child td:first-child {
+  border-bottom-left-radius: 10px;
+}
+
+tr:last-child td:last-child {
+  border-bottom-right-radius: 10px;
+}
+
+td:first-child {
+  border-top-left-radius: 10px;
+}
+
+td:last-child {
+  border-top-right-radius: 10px;
+}
+
+tr {
+  background-color: #ffffff;
+  color: #000000;
+  text-align: center;
+  overflow: hidden;
+}
+
+.amount-positive-bulan {
+  color: #388e3c;
+}
+
+.amount-negative-bulan {
+  color: #d32f2f;
+}
+
+.container-main-rekap {
+  display: flex;
+  justify-content: flex-start;
+  gap: 20px;
+  margin: 20px;
+  margin: auto;
+  margin-left: 60px;
+}
+
+.container-side-tahun {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  align-items: center;
+  transform: translateX(-180px);
+  margin-top: 20px;
+  margin-right: 100px;
+}
+
+.card-tahun-saldo {
+  background-color: #d8bfd898;
+  border-radius: 10px;
+  padding: 0px;
+  width: 350px;
+  height: 150px;
+  text-align: center;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.card-content-tahun {
+  max-width: 200px;
+  text-align: center;
+  margin-left: 50px;
+}
+
+.card-tahun h1 {
+  font-size: 20px;
+  color: black;
+  margin: 0 0 10px;
+  font-weight: bold;
+}
+
+.card-tahun p {
+  font-size: 16px;
+  color: black;
+  margin: 5px 0 10px;
+}
+
+.card-tahun img {
+  width: 150px;
+  height: 160px;
+}
+
+.info-tahun {
+  width: 350px;
+  margin-top: -10px;
+  text-align: center;
+  color: #fff;
+  font-size: 15px;
+}
+
+.info-tahun div {
+  justify-content: space-between;
+  align-items: center;
+  text-align: left;
+  padding: 5px 10px;
+  white-space: nowrap;
+}
+
+.red-box-tahun,
+.green-box-tahun,
+.yellow-box-tahun,
+.black-box-tahun {
+  width: 20px;
+  height: 20px;
+  display: inline-block;
+  margin-right: 10px;
+}
+
+.red-box-tahun {
+  background-color: red;
+}
+
+.green-box-tahun {
+  background-color: green;
+}
+
+.yellow-box-tahun {
+  background-color: yellow;
+}
+
+.black-box-tahun {
+  background-color: black;
+}
+
+.green-font-tahun {
+  color: #008000;
+}
+
+.yellow-font-tahun {
+  color: #ffff00;
+}
+
+.black-font-tahun {
+  color: #00ffff;
+}
+
+.container-tahun {
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+.button-container button {
+  align-items: center;
+  margin-left: 100px;
+}
+.header-tahun {
+  background-color: rgba(141, 106, 224, 0.322);
+  color: #ffffff;
+  text-align: center;
+  padding: 10px;
+  font-size: 18px;
+  position: relative;
+  border-radius: 10px;
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.header-tahun i {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  cursor: pointer;
+}
+
+.header-tahun .prev-tahun {
+  left: 10px;
+}
+
+.header-tahun .next-tahun {
+  right: 10px;
+}
+
+.grid-tahun {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: -20px;
+  margin-top: -20px;
+}
+
+.container-side-tahun {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  align-items: center;
+  transform: translateX(-130px);
+  margin-top: 20px;
+}
+
+.card-tahun-saldo {
+  background-color: #d8bfd898;
+  border-radius: 10px;
+  padding: 0px;
+  width: 350px;
+  height: 150px;
+  text-align: center;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-left: 100px;
+}
+
+.card-content-tahun {
+  max-width: 200px;
+  text-align: center;
+  margin-left: 50px;
+}
+
+.card-tahun h1 {
+  font-size: 20px;
+  color: black;
+  margin: 0 0 10px;
+  font-weight: bold;
+}
+
+.card-tahun p {
+  font-size: 16px;
+  color: black;
+  margin: 5px 0 10px;
+}
+
+.card-tahun img {
+  width: 150px;
+  height: 160px;
+}
+
+.info-tahun {
+  width: 350px;
+  margin-top: -10px;
+  text-align: center;
+  color: #fff;
+  font-size: 15px;
+}
+
+.info-tahun div {
+  justify-content: space-between;
+  align-items: center;
+  text-align: left;
+  padding: 5px 10px;
+  white-space: nowrap;
+}
+
+.red-box-tahun,
+.green-box-tahun,
+.yellow-box-tahun,
+.black-box-tahun {
+  width: 20px;
+  height: 20px;
+  display: inline-block;
+  margin-right: 10px;
+}
+
+.card-tahun {
+  background: rgba(166, 143, 228, 0.65);
+  border-radius: 10px;
+  padding: 20px;
+  text-align: justify;
+  position: relative;
+  width: 100%;
+  height: 80%;
+  margin-left: 100px;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  max-width: 350px;
+  margin: 0 auto;
+  padding-top: 50px;
+}
+
+.card-tahun:hover {
+  transform: scale(1.05);
+}
+
+.card-tahun h2 {
+  margin: 0 0 10px;
+  font-size: 20px;
+  text-align: center;
+  background: rgba(231, 229, 229, 0.164);
+  padding: 10px;
+  border-radius: 10px 10px 0 0;
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  color: black;
+}
+
+.card-tahun span {
+  font-size: 16px;
+  margin-top: 8px;
+  margin-bottom: 2px;
+  display: flex;
+  justify-content: space-between;
+  text-align: left;
+}
+
+.card-tahun .total-pemasukan,
+.card-tahun .total-pengeluaran,
+.card-tahun .sisa-surplus {
+  text-align: left;
+  flex: 1;
+}
+
+.card-tahun .nilai-pemasukan,
+.card-tahun .nilai-pengeluaran,
+.card-tahun .nilai-sisa {
+  text-align: right;
+  flex: 1;
+}
+
+.card-tahun {
+  margin-top: 50px;
+}
+
+.card-tahun .highlight-tahun-juni {
+  color: #ffeb3b;
+}
+
+.card-tahun .highlight-tahun-desember {
+  color: #000000;
+}
+
+.card-tahun .negative-tahun {
+  color: #ff5722;
+}
+
+.card-tahun button {
+  background: rgb(55, 21, 111);
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 5px;
+  cursor: pointer;
+  margin-top: 10px;
+  align-self: center;
+  align-items: center;
+}
+
+.card-tahun.mei {
+  background: rgba(248, 125, 125, 0.65);
+}
+
+.card-tahun.desember {
+  background: rgba(107, 216, 107, 0.65);
+}
+
+/* For screen widths 1024px and below (tablets and smaller screens) */
+@media screen and (max-width: 1200px) {
+  .headerrekap {
+    height: 300px;
+    padding: 50px 10px;
+  }
+
+  .headerrekap h1 {
+    font-size: 24px;
+    padding-left: 10px;
+    margin-top: 20px;
+    max-width: 90%;
+  }
+
+  .cardsrekap {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+  }
+
+  .cardrekap {
+    width: 50%;
+    margin: 10px 20px;
+    padding: 15px;
+    align-items: center;
+  }
+
+  .image-rekap {
+    display: none;
+    width: 300px;
+    margin-top: -200px;
+    margin-right: -200px;
+  }
+
+  .container-rekap {
+    max-width: 100%;
+    margin-left: 20px;
+    margin-right: 20px;
+  }
+
+  .container-side-tahun {
+    transform: translateX(0);
+    margin-top: 20px;
+  }
+
+  .grid-tahun {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .card-tahun-saldo {
+    width: 100%;
+    margin: 10px 0;
+  }
+
+  .container-main-rekap {
+    flex-direction: column;
+    margin-left: 0;
+    margin-right: 0;
+  }
+
+  .card-tahun {
+    width: 100%;
+    margin-left: 0;
+    padding-top: 20px;
+  }
+
+  .card-tahun h2 {
+    font-size: 18px;
+  }
+
+  .card-tahun button {
+    padding: 8px 15px;
+  }
+
+  .table-hari {
+    font-size: 12px;
+  }
+
+  .transaction-summary-rekap {
+    flex-direction: row;
+  }
+
+  .transaction-box-rekap {
+    width: 100%;
+    margin-bottom: 10px;
+  }
+
+  .transaction-amount-rekap {
+    font-size: 16px;
+  }
+
+  .header-bulan {
+    font-size: 16px;
+  }
+
+  .container-bulan {
+    padding: 10px;
+  }
+}
+
+/* For screen widths 768px and below (tablets and smaller devices like phones) */
+@media screen and (max-width: 768px) {
+  .headerrekap {
+    padding: 40px 10px;
+    height: 250px;
+  }
+
+  .headerrekap h1 {
+    font-size: 20px;
+    margin-top: 10px;
+  }
+
+  .cardsrekap {
+    flex-direction: column;
+    margin: 0;
+  }
+
+  .cardrekap {
+    width: 90%;
+    margin: 15px auto;
+    padding: 15px;
+  }
+
+  .container-rekap {
+    margin-left: 10px;
+    margin-right: 10px;
+    width: 450px;
+    height: 300px;
+  }
+
+  .container-side-tahun {
+    transform: translateX(0);
+  }
+  .image-rekap {
+    width: 250px;
+    margin-top: -300px;
+    margin-right: 0%;
+  }
+  .grid-tahun {
+    grid-template-columns: repeat(2, 1fr);
+    margin: 15px;
+    gap: 20px;
+  }
+
+  .container-main-rekap {
+    margin: 10px;
+    flex-direction: row;
+    align-items: center;
+  }
+
+  .card-tahun {
+    width: 100%;
+    margin-left: 0;
+    padding-top: 10px;
+    text-align: center;
+    display: center;
+  }
+
+  .card-tahun h2 {
+    font-size: 16px;
+  }
+
+  .card-tahun button {
+    padding: 8px 15px;
+  }
+
+  .table-hari {
+    font-size: 12px;
+  }
+
+  .transaction-summary-rekap {
+    flex-direction: row;
+  }
+
+  .transaction-box-rekap {
+    width: 100%;
+    margin-bottom: 10px;
+  }
+
+  .transaction-amount-rekap {
+    font-size: 14px;
+  }
+
+  .header-bulan {
+    font-size: 14px;
+  }
+
+  .container-bulan {
+    padding: 5px;
+  }
+  .info-tahun {
+    font-size: 11px;
+  }
+}

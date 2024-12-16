@@ -1,0 +1,683 @@
+/*kelola*/
+.kelola-hero-section {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  text-align: center;
+  margin-top: 50px;
+  margin-bottom: 50px;
+}
+
+.kelola-hero-section h2 {
+  font-size: 24px;
+  color: #fff;
+  max-width: 600px;
+  line-height: 1.5;
+  margin: 0;
+  align-self: center;
+  justify-content: center;
+  margin-right: 80px;
+}
+
+.kelola-image-container {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: -1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  opacity: 0.5;
+}
+
+.kelola-card-homepage {
+  width: 100%;
+  height: auto;
+  object-fit: cover;
+}
+
+.kelola-form-container {
+  position: relative;
+  z-index: 1;
+  background-color: rgba(248, 243, 243, 0.505);
+  padding: 20px;
+  width: 400px;
+  text-align: center;
+  border-radius: 8px;
+  margin: 30px auto;
+  color: black;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+/* Gaya judul form */
+.kelola-form-title {
+  background-color: #2d0f85;
+  color: white;
+  padding: 10px 0;
+  border-radius: 5px;
+  margin-bottom: 20px;
+}
+
+/* Gaya label */
+.kelola-label {
+  display: block;
+  margin-bottom: 10px;
+  color: #2d0f85;
+  font-weight: bold;
+}
+
+/* Input Group */
+.kelola-input-group {
+  display: flex;
+  align-items: center;
+  margin-bottom: 15px;
+  background-color: white;
+  border-radius: 5px;
+}
+
+.kelola-input-group span {
+  background-color: #2d0f85;
+  padding: 10px;
+  border-top-left-radius: 5px;
+  border-bottom-left-radius: 5px;
+  color: white;
+}
+
+.kelola-input-group input {
+  width: 100%;
+  padding: 10px;
+  border: none;
+  outline: none;
+  font-size: 16px;
+}
+
+/* Gaya Tombol */
+.kelola-button {
+  background-color: #37156f;
+  color: white;
+  padding: 10px 20px;
+  font-size: 16px;
+  font-weight: bold;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+  transition: background-color 0.3s ease;
+}
+
+.kelola-button:hover {
+  background-color: #2d0f85;
+}
+
+.kelola-card-homepage {
+  width: 100%;
+  max-width: 600px;
+  height: auto;
+}
+
+.kelola-month-nav {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #37156f;
+  padding: 10px 15px;
+  border-radius: 8px;
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+  margin: 0 auto 20px;
+  width: fit-content;
+}
+
+#kelola-bulanTahun {
+  font-size: 20px;
+  color: white;
+  margin: 0 15px;
+  text-align: center;
+  flex-grow: 1;
+}
+
+.kelola-navButton {
+  background: none;
+  color: white;
+  font-size: 20px;
+  border: none;
+  cursor: pointer;
+  padding: 5px;
+}
+
+.kelola-navButton:hover {
+  color: #ddd;
+}
+
+.kelola-month-nav > button:first-child {
+  margin-right: -80px;
+}
+
+.kelola-month-nav > button:last-child {
+  margin-left: 10px;
+}
+
+.kelola-summary {
+  background-color: rgba(255, 255, 255, 0.3);
+  width: 100%;
+  max-width: 1200px;
+  margin: 80px auto 20px;
+  padding: 20px;
+  text-align: center;
+  border-radius: 12px;
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+  margin-top: 20px;
+}
+
+.kelola-summary p {
+  margin-top: 10px;
+  color: white;
+  font-weight: 400;
+}
+
+.kelola-charts {
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+}
+
+.kelola-chart-card {
+  background: #ffffff;
+  width: 300px;
+  height: 350px;
+  border-radius: 10px;
+  padding: 10px;
+  padding-bottom: 20px;
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.kelola-chart-card p {
+  text-align: center;
+  font-size: 16px;
+  font-weight: bold;
+  margin-bottom: 10px;
+  color: #333;
+}
+
+.kelola-transactions {
+  margin-top: 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.container-grafik {
+  background-color: rgba(255, 255, 255, 0.2);
+  width: 80%;
+  max-width: 1200px;
+  margin: 50px auto;
+  padding: 20px;
+  color: white;
+  box-shadow: #5c00b2;
+  border-radius: 10px;
+}
+.notes-grafik {
+  margin-left: 410px;
+}
+.grafik-popup-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.grafik-popup {
+  background: #2d0f85;
+  border-radius: 10px;
+  padding: 20px;
+  width: 300px;
+  text-align: center;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  position: relative;
+}
+
+.grafik-popup button {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background: none;
+  border: none;
+  font-size: 20px;
+  cursor: pointer;
+  color: #fff;
+}
+
+.grafik-popup p {
+  cursor: pointer;
+  padding: 10px;
+  font-size: 18px;
+  color: #fff;
+  text-align: center;
+  margin: 10px 0;
+}
+
+.grafik-popup hr {
+  margin: 10px 0;
+  border: none;
+  border-top: 2px solid #ccc;
+}
+.kelola-transaction-content {
+  background-color: rgba(75, 75, 142, 0.8);
+  padding: 20px;
+  width: 90%;
+  max-width: 1200px;
+  border-radius: 10px;
+  text-align: center;
+  margin-bottom: 15px;
+}
+
+.kelola-no-record {
+  color: white;
+  font-size: 16px;
+  margin-bottom: 10px;
+  font-weight: 400;
+}
+
+.kelola-separator-line {
+  border: none;
+  border-top: 3px solid white;
+  width: 80%;
+  margin: 10px auto;
+}
+
+.kelola-button-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: 20px;
+}
+
+#kelola-addRecordBtn {
+  background-color: #4b4b8e;
+  color: white;
+  border: none;
+  cursor: pointer;
+  font-weight: 500;
+  flex-direction: column;
+  align-items: center;
+  margin-top: 20px;
+  display: flex;
+  padding: 10px 20px;
+  border-radius: 5px;
+}
+
+#kelola-addRecordBtn:hover {
+  background-color: #3b3b7a;
+}
+
+.kelola-rekap-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.kelola-rekap-button {
+  background-color: #2d0f85;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 5px;
+  cursor: pointer;
+  font-weight: 500;
+}
+
+.kelola-rekap-button:hover {
+  background-color: #2d0f85;
+}
+
+#kelola-addRecordBtn,
+.kelola-rekap-button {
+  width: 200px;
+  text-align: center;
+}
+
+.kelola-popup2 {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: rgba(0, 0, 0, 0.3);
+  padding: 20px;
+  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.5);
+  border-radius: 8px;
+  z-index: 1000;
+  display: none;
+}
+
+.kelola-form-content {
+  background: #2d0f85;
+  padding: 20px;
+  border-radius: 10px;
+  text-align: center;
+  width: 250px;
+}
+
+.kelola-form-content p {
+  color: white;
+  margin: 10px 0;
+  font-size: 16px;
+  font-weight: 500;
+}
+
+.kelola-form-content hr {
+  border: none;
+  border-top: 2px solid white;
+  margin: 10px 0;
+  border-radius: 10px;
+  background-color: rgba(255, 255, 255, 0.342);
+}
+
+.kelola-catat-transaksi {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 20px;
+  width: 100%;
+  position: relative;
+}
+
+.kelola-catat-transaksi p {
+  font-size: 18px;
+  font-weight: 700;
+  color: white;
+  margin: 0 10px;
+}
+
+.kelola-line-left,
+.kelola-line-right {
+  position: absolute;
+  top: 50%;
+  width: 40%;
+  height: 2px;
+  background-color: white;
+}
+
+.kelola-line-left {
+  left: 0;
+}
+
+.kelola-line-right {
+  right: 0;
+}
+.inputkelola-header-and-form {
+  display: flex;
+  flex-direction: column;
+  margin-left: 100px;
+}
+
+.inputkelola-header-and-form h2 {
+  font-size: 28px;
+  color: #ffffff;
+  margin-bottom: 10px;
+}
+
+.inputkelola-form-and-illustration {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+}
+.rekap-button {
+  background-color: #2d0f85;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 5px;
+  cursor: pointer;
+  margin-top: 10px;
+  font-weight: 500;
+}
+
+.rekap-button:hover {
+  background-color: #2d0f85;
+}
+
+.rekap-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.popup-form {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  justify-content: center;
+  align-items: center;
+}
+
+.form-content {
+  background: #2d0f85;
+  padding: 20px;
+  border-radius: 10px;
+  text-align: center;
+  width: 250px;
+  cursor: pointer;
+}
+
+.form-content p {
+  color: white;
+  margin: 10px 0;
+  font-size: 16px;
+  font-weight: 500;
+}
+
+.form-content hr {
+  border: none;
+  border-top: 2px solid white;
+  margin: 10px 0;
+}
+
+.catat-transaksi {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 60px; /* Jarak dari charts */
+  position: relative;
+  width: 100%;
+}
+
+.catat-transaksi p {
+  font-size: 18px;
+  font-weight: 700;
+  color: white;
+  margin: 0 10px;
+}
+
+.line-left,
+.line-right {
+  position: absolute;
+  top: 50%;
+  width: 40%;
+  height: 2px;
+  background-color: white;
+}
+
+.line-left {
+  left: 0;
+  transform: translateY(-50%);
+}
+
+.line-right {
+  right: 0;
+  transform: translateY(-50%);
+}
+
+.item {
+  display: flex;
+  justify-content: space-between;
+  padding: 15px 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.item:last-of-type {
+  border-bottom: none;
+}
+
+.item span {
+  font-size: 16px;
+  color: #fff;
+}
+
+.income {
+  color: #78ff98; /* Warna hijau untuk pendapatan */
+  font-weight: bold;
+}
+
+.expense {
+  color: #ff6666; /* Warna merah untuk pengeluaran */
+  font-weight: bold;
+}
+.add-note {
+  margin-top: 15px;
+  text-align: center;
+  font-size: 14px;
+  color: #fff;
+  opacity: 0.8;
+  cursor: pointer;
+}
+
+.add-note:hover {
+  text-decoration: underline;
+}
+
+@media (max-width: 1024px) {
+  .kelola-hero-section {
+    margin-top: 30px;
+    margin-bottom: 30px;
+    margin-left: 70px;
+  }
+
+  .kelola-form-container {
+    width: 90%;
+    margin: 20px auto;
+  }
+
+  .kelola-charts {
+    flex-direction: row;
+    gap: 15px;
+  }
+
+  .kelola-chart-card {
+    width: 60%;
+    margin: 0 auto;
+  }
+
+  .kelola-summary {
+    padding: 10px;
+    font-size: 0.8rem;
+  }
+}
+
+/* Ukuran layar kecil (ponsel) */
+@media (max-width: 768px) {
+  .kelola-hero-section h2 {
+    font-size: 20px;
+    line-height: 1.3;
+    align-items: center;
+    padding: 0.5em;
+  }
+
+  .kelola-form-container {
+    margin-bottom: 40px;
+    padding: 15px;
+    border-radius: 5px;
+    width: 400px;
+    align-self: center;
+  }
+
+  .kelola-charts {
+    gap: 10px;
+    flex-direction: row;
+  }
+
+  .kelola-chart-card {
+    width: 200px;
+    height: auto;
+  }
+  .containergrafik {
+    background-color: rgba(255, 255, 255, 0.2);
+    width: 600px;
+    margin: 50px auto;
+    padding: 20px;
+    color: white;
+    box-shadow: #5c00b2;
+    border-radius: 10px;
+  }
+  .kelola-transaction-content {
+    width: 500px;
+    padding: 15px;
+  }
+
+  .kelola-summary {
+    font-size: 0.7rem;
+  }
+
+  .kelola-navButton {
+    font-size: 16px;
+    padding: 5px;
+  }
+
+  #kelola-bulanTahun {
+    font-size: 18px;
+  }
+}
+
+/* Ukuran layar sangat kecil (ponsel kecil) */
+@media (max-width: 480px) {
+  .kelola-hero-section h2 {
+    font-size: 18px;
+  }
+
+  .kelola-form-container {
+    padding: 10px;
+    width: 90%;
+  }
+
+  .kelola-charts {
+    flex-direction: row;
+    gap: 5px;
+  }
+
+  .kelola-chart-card {
+    padding: 10px;
+  }
+
+  .kelola-summary {
+    padding: 10px;
+    font-size: 0.8rem;
+  }
+
+  .kelola-button {
+    padding: 8px 16px;
+    font-size: 14px;
+  }
+
+  .item span {
+    font-size: 14px;
+  }
+
+  .income,
+  .expense {
+    font-size: 14px;
+  }
+
+  .add-note {
+    font-size: 12px;
+  }
+}

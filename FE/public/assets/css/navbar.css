@@ -1,0 +1,218 @@
+/* Reset and Global Styles */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: "DM Sans", sans-serif;
+}
+
+/* Navbar Container */
+.navbar-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 15px 30px;
+  background-color: rgba(255, 255, 255, 0.2);
+  max-width: 1440px;
+  margin: 15px auto;
+  border-radius: 12px;
+  border: 2px solid rgba(255, 255, 255, 0.5);
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Navbar Header (Logo and Toggle Button) */
+.navbar-header {
+  display: flex;
+  align-items: center;
+}
+
+/* Logo */
+.logo-image {
+  height: 30px;
+  margin-left: 0;
+}
+
+/* Navbar Menu */
+.navbar-menu {
+  display: flex;
+  align-items: center;
+}
+
+.navbar {
+  display: flex;
+  list-style: none;
+}
+
+.navbar li a {
+  color: white;
+  font-weight: bold;
+  font-size: 14px;
+}
+
+.navbar li a:hover {
+  text-decoration: underline;
+}
+
+/* Authentication Buttons */
+.auth-buttons {
+  display: flex;
+  gap: 10px;
+  margin-left: auto;
+}
+
+.auth-buttons .register-btn,
+.auth-buttons .login-btn {
+  padding: 10px 20px;
+  font-size: 15px;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.auth-buttons .register-btn {
+  background-color: white;
+  color: #7f31d4;
+  border: 2px solid #7f31d4;
+}
+
+.auth-buttons .login-btn {
+  background-color: #3b008a;
+  color: white;
+  border: none;
+}
+
+.auth-buttons .register-btn:hover {
+  background-color: rgba(255, 255, 255, 0.8);
+}
+
+.auth-buttons .login-btn:hover {
+  background-color: #5c00b2;
+}
+
+/* Navbar Toggle Button */
+#navbar-toggler {
+  display: none;
+  /* Hidden by default */
+  background-color: transparent;
+  border: none;
+}
+
+#navbar-toggler-icon {
+  font-size: 24px;
+  cursor: pointer;
+  color: white;
+}
+
+.navbar-toggler-icon.open {
+  transform: rotate(90deg);
+}
+
+/* Navbar Toggle Button */
+#navbar-toggler {
+  display: none;
+  /* Hidden by default */
+  background-color: transparent;
+  border: none;
+}
+
+#navbar-toggler-icon {
+  font-size: 24px;
+  cursor: pointer;
+  color: white;
+}
+
+/* Navbar Header */
+.navbar-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px;
+  width: 1000px;
+}
+
+/* Navbar Menu */
+.navbar-menu {
+  display: flex;
+  align-items: center;
+  width: 100%;
+}
+
+/* Responsive Styling */
+@media (max-width: 1024px) {
+  #navbar-toggler {
+    display: block;
+    margin-left: auto;
+    background-color: transparent;
+    border: none;
+  }
+
+  .navbar-menu {
+    display: none;
+    flex-direction: column;
+    align-items: flex-start;
+    background-color: rgba(255, 255, 255, 0.9);
+    position: absolute;
+    top: 70px;
+    right: 0;
+    width: 200px;
+    z-index: 1000;
+    padding: 20px 15px;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+    transform: translateY(-100%);
+    transition: transform 0.3s ease-in-out;
+    border: 10px;
+  }
+
+  .navbar-menu.show {
+    display: flex;
+    transform: translateY(0);
+  }
+
+  .navbar {
+    flex-direction: column;
+    width: 100%;
+  }
+
+  .navbar li {
+    width: 100%;
+    margin-bottom: 15px;
+    text-align: left;
+  }
+
+  .navbar li a {
+    width: 100%;
+    display: block;
+    font-size: 14px;
+    color: #333;
+  }
+}
+
+/* Smaller Devices (Mobile) */
+@media (max-width: 768px) {
+  .navbar-menu {
+    background-color: rgba(255, 255, 255, 0.877);
+    color: white;
+    margin-bottom: 10px;
+  }
+
+  .navbar li a {
+    font-size: 12px;
+    color: rgb(41, 41, 41);
+  }
+}
+
+@media (max-width: 480px) {
+  .logo-image {
+    height: 30px;
+    margin-left: 0;
+    width: 40px;
+  }
+
+  #navbar-toggler {
+    font-size: 15px;
+  }
+
+  .navbar li a {
+    font-size: 10px;
+    padding: 8px 0;
+  }
+}
