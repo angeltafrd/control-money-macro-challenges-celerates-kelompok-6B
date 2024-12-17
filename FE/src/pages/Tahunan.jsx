@@ -75,9 +75,10 @@ function Tahunan() {
     setIsNextYear(true);
   };
 
+  // Tambahkan fetchYearData ke dalam array dependensi useEffect
   useEffect(() => {
     fetchYearData(year);
-  }, [year]);
+  }, [year, fetchYearData]);  // fetchYearData ditambahkan ke sini untuk menghindari peringatan
 
   const goToPrevYear = () => setYear((prevYear) => prevYear - 1);
   const goToNextYear = () => setYear((prevYear) => prevYear + 1);
