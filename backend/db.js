@@ -10,7 +10,7 @@ const db = mysql.createConnection({
     host: 'localhost',
     user: 'root',
     password: '',
-    database: 'signup',
+    database: 'controlmoney',
 });
 
 db.connect((err) => {
