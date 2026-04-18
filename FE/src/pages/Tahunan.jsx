@@ -23,8 +23,14 @@ function Tahunan() {
   const [totalIncome, setTotalIncome] = useState(0);
   const [totalExpense, setTotalExpense] = useState(0);
 
+  // Tambahkan fetchYearData ke dalam array dependensi useEffect
   useEffect(() => {
+<<<<<<< HEAD
     if (!userId) return;
+=======
+    fetchYearData(year);
+  }, [year, fetchYearData]);  // fetchYearData ditambahkan ke sini untuk menghindari peringatan
+>>>>>>> 9b7024fcd87a7e57c8e27f627f3b1986ffa85128
 
     axios
       .get(`http://localhost:8081/rekap/tahunan/${userId}/${year}`)
