@@ -2,48 +2,131 @@ import React, { useContext, useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { UserContext } from '../context/UserContext';
 import axios from 'axios';
+import jsPDF from "jspdf";
+import autoTable from "jspdf-autotable";
 
 function Profil() {
   const { user, setUser } = useContext(UserContext);
-  const [profileImage, setProfileImage] = useState(null);
   const navigate = useNavigate();
+
+  const [profileImage, setProfileImage] = useState(null);
+  const [profileImageFile, setProfileImageFile] = useState(null);
+
   const [profileVisible, setProfileVisible] = useState(true);
   const [editProfileVisible, setEditProfileVisible] = useState(false);
+
   const [formData, setFormData] = useState({
-    username: user?.username || '',
-    email: user?.email || '',
+    username: '',
+    email: '',
     password: '',
   });
+
   const [isPasswordVisible, setIsPasswordVisible] = useState(false);
-  const [isLanguageMenuVisible, setIsLanguageMenuVisible] = useState(false); 
-  const [language, setLanguage] = useState('id'); 
 
+  /* ================= SYNC USER ================= */
   useEffect(() => {
-    const savedProfileImage = localStorage.getItem('profileImage');
-    if (savedProfileImage) {
-      setProfileImage(savedProfileImage); 
-    }
-  }, []); 
+    if (user) {
+      setFormData({
+        username: user.username || '',
+        email: user.email || '',
+        password: '',
+      });
 
+      if (user.photo) {
+        setProfileImage(
+          `http://localhost:8081/uploads/${user.photo}?t=${Date.now()}`
+        );
+      }
+    }
+  }, [user]);
+
+  /* ================= EXPORT PDF ================= */
+  const handleExport = async () => {
+    try {
+      // ✅ FIX: pakai user.id (sesuai backend)
+      if (!user || !user.id) {
+        alert("User belum login");
+        return;
+      }
+
+      const res = await axios.get(
+        `http://localhost:8081/transactions/${user.id}`
+      );
+
+      console.log("DATA API:", res.data);
+
+      const transactions = res.data;
+
+      if (!transactions || transactions.length === 0) {
+        alert("Tidak ada data untuk diexport");
+        return;
+      }
+
+      const doc = new jsPDF();
+
+      doc.setFontSize(16);
+      doc.text("Laporan Keuangan Control Money", 14, 15);
+
+      const today = new Date().toLocaleDateString();
+      doc.setFontSize(10);
+      doc.text(`Tanggal: ${today}`, 14, 22);
+
+      const tableColumn = ["Tanggal", "Tipe", "Nominal", "Catatan"];
+      const tableRows = [];
+
+      transactions.forEach((item) => {
+        tableRows.push([
+          item.date,
+          item.type,
+          item.amount,
+          item.note || "-"
+        ]);
+      });
+
+      autoTable(doc, {
+        startY: 30,
+        head: [tableColumn],
+        body: tableRows,
+      });
+
+      // TOTAL
+      const total = transactions.reduce(
+        (sum, item) => sum + Number(item.amount),
+        0
+      );
+
+      const formatRupiah = (angka) => {
+        return new Intl.NumberFormat("id-ID").format(angka);
+      };
+
+      doc.text(
+        `Total: Rp ${formatRupiah(total)}`,
+        14,
+        doc.lastAutoTable.finalY + 10
+      );
+
+      doc.save(`laporan-keuangan-${today}.pdf`);
+
+    } catch (err) {
+      console.error(err);
+      alert("Gagal export PDF");
+    }
+  };
+
+  /* ================= HANDLE MENU ================= */
   const handleClick = (section) => {
     if (section === 'Edit Profil Pengguna') {
       setProfileVisible(false);
       setEditProfileVisible(true);
-    } else if (section === 'Hubungi Kami' || section === 'Privasi & Keamanan') {
+    } else if (section === 'Hubungi Kami') {
       navigate('/hubungi-kami');
+    } else if (section === 'Privasi & Keamanan') {
+      navigate('/privasi');
     } else if (section === 'Notifikasi') {
       navigate('/riwayat');
-    } else if (section === 'Bahasa') {
-      setIsLanguageMenuVisible(!isLanguageMenuVisible); 
-    } else {
-      alert(`Menu ${section} dipilih`);
+    } else if (section === 'Export Data') {
+      handleExport();
     }
-  };
-
-  const handleLanguageChange = (lang) => {
-    setLanguage(lang);
-    setIsLanguageMenuVisible(false);
-    alert(`Bahasa dipilih: ${lang === 'id' ? 'Bahasa Indonesia' : 'English'}`);
   };
 
   const handleChange = (e) => {
@@ -51,25 +134,50 @@ function Profil() {
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
+  /* ================= UPDATE PROFILE ================= */
   const handleProfileUpdate = async (e) => {
     e.preventDefault();
-    try {
-      const updatedUser = {
-        userId: user.id,
-        ...formData
-      };
 
-      const res = await axios.put('http://localhost:8081/update-profile', updatedUser);
-      if (res.data.Message === "Profile updated successfully") {
-        alert("Profil berhasil diperbarui");
-        setUser({
-          ...user,
-          username: formData.username,
-          email: formData.email,
-        });
-        setEditProfileVisible(false);
-        setProfileVisible(true);
+    try {
+      const form = new FormData();
+      form.append("username", formData.username);
+      form.append("email", formData.email);
+      form.append("password", formData.password);
+
+      if (profileImageFile) {
+        form.append("photo", profileImageFile);
       }
+
+      const res = await axios.put(
+        `http://localhost:8081/users/${user.id}`,
+        form,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        }
+      );
+
+      alert("Profil berhasil diperbarui");
+
+      const newPhoto = res.data.photo || user.photo;
+
+      setUser({
+        ...user,
+        username: formData.username,
+        email: formData.email,
+        photo: newPhoto,
+      });
+
+      if (newPhoto) {
+        setProfileImage(
+          `http://localhost:8081/uploads/${newPhoto}?t=${Date.now()}`
+        );
+      }
+
+      setEditProfileVisible(false);
+      setProfileVisible(true);
+
     } catch (err) {
       console.error(err);
       alert("Terjadi kesalahan saat memperbarui profil.");
@@ -80,13 +188,13 @@ function Profil() {
     setIsPasswordVisible(!isPasswordVisible);
   };
 
+  /* ================= IMAGE PREVIEW ================= */
   const handleImageChange = (e) => {
     const file = e.target.files[0];
     if (file) {
-      const imageUrl = URL.createObjectURL(file); 
+      setProfileImageFile(file);
+      const imageUrl = URL.createObjectURL(file);
       setProfileImage(imageUrl);
-
-      localStorage.setItem('profileImage', imageUrl);
     }
   };
 
@@ -98,60 +206,53 @@ function Profil() {
     );
   }
 
+  const imageUrl =
+    profileImage ||
+    (user.photo
+      ? `http://localhost:8081/uploads/${user.photo}?t=${Date.now()}`
+      : '/default-avatar.png');
+
   return (
     <>
       {profileVisible && (
-        <section id="profil">
-          <div className="profil-container">
-            <div className="containerprofil">
-              <div className="profile">
-                <div className="avatar">
-                  <div
-                    className="profile-pic"
-                    style={{
-                      backgroundImage: `url(${profileImage || '/default-avatar.png'})`, 
-                      backgroundSize: 'cover',
-                      backgroundPosition: 'center',
-                    }}
-                  ></div>
-                  <input
-                    type="file"
-                    accept="image/*"
-                    onChange={handleImageChange}
-                    style={{ display: 'none' }}
-                    id="file-input"
-                  />
-                  <label htmlFor="file-input" className="edit-iconprofil">
-                    ✏️
-                  </label>
+          <section id="profil">
+            <div className="profil-container">
+              <div className="containerprofil">
+                <div className="profile">
+                  <div className="avatar">
+                    <div
+                      className="profile-pic"
+                      style={{
+                        backgroundImage: `url(${imageUrl})`,
+                        backgroundSize: 'cover',
+                        backgroundPosition: 'center',
+                      }}
+                    ></div>
+
+                  <input type="file" accept="image/*" onChange={handleImageChange} style={{ display: 'none' }} id="file-input" />
+                  <label htmlFor="file-input" className="edit-iconprofil">✏️</label>
                 </div>
+
                 <h1>{user.username}</h1>
                 <p>{user.email}</p>
               </div>
+
               <div className="menu">
                 <div className="menu-item" onClick={() => handleClick('Edit Profil Pengguna')}>
                   <span>✏️ Edit profil pengguna</span>
                   <span className="arrow">❯</span>
                 </div>
-                <div className="menu-item" onClick={() => handleClick('Notifikasi')}>
-                  <span>🔔 Notifikasi</span>
+
+                <div className="menu-item" onClick={() => handleClick('Export Data')}>
+                  <span>📥 Export Data</span>
                   <span className="arrow">❯</span>
                 </div>
-                <div className="menu-item" onClick={() => handleClick('Bahasa')}>
-                  <span>🌐 Bahasa</span>
-                  <span className="arrow">❯</span>
-                  {isLanguageMenuVisible && (
-                    <div className="language-dropdown">
-                      <ul>
-                        <li onClick={() => handleLanguageChange('id')}>Bahasa Indonesia</li>
-                      </ul>
-                    </div>
-                  )}
-                </div>
+
                 <div className="menu-item" onClick={() => handleClick('Hubungi Kami')}>
                   <span>📞 Hubungi kami</span>
                   <span className="arrow">❯</span>
                 </div>
+
                 <div className="menu-item" onClick={() => handleClick('Privasi & Keamanan')}>
                   <span>🔒 Privasi & keamanan</span>
                   <span className="arrow">❯</span>
@@ -162,100 +263,108 @@ function Profil() {
         </section>
       )}
 
-      {editProfileVisible && (
-        <section id="editProfile">
-          <div className="kontainerProfil">
-            <div className="headerProfil">
-              <div className="fotoProfil">
-                <div
-                  className="profile-pic"
-                  style={{
-                    backgroundImage: `url(${profileImage || '/default-avatar.png'})`,
-                    backgroundSize: 'cover',
-                    backgroundPosition: 'center',
-                    width: '100px',
-                    height: '100px',
-                    borderRadius: '50%',
-                  }}
-                ></div>
-                <input
-                  type="file"
-                  accept="image/*"
-                  onChange={handleImageChange}
-                  style={{ display: 'none' }}
-                  id="file-input-edit"
-                />
-                <label htmlFor="file-input-edit" className="edit-iconprofil">
-                  ✏️
-                </label>
-              </div>
-            </div>
-            <form className="formProfil" onSubmit={handleProfileUpdate}>
-              <div className="formGrupProfil">
-                <label htmlFor="username">Nama Akun</label>
-                <div className="inputWrapper">
-                  <input
-                    type="text"
-                    id="username"
-                    name="username"
-                    placeholder="Masukkan Nama Akun"
-                    value={formData.username}
-                    onChange={handleChange}
-                  />
-                  <span className="ikonEdit">✎</span>
-                </div>
-              </div>
-              <div className="formGrupProfil">
-                <label htmlFor="email">Email</label>
-                <div className="inputWrapper">
-                  <input
-                    type="email"
-                    id="email"
-                    name="email"
-                    placeholder="Masukkan Email"
-                    value={formData.email}
-                    onChange={handleChange}
-                  />
-                  <span className="ikonEdit">✎</span>
-                </div>
-              </div>
-              <div className="formGrupProfil">
-                <label htmlFor="password">Kata Sandi</label>
-                <div className="inputWrapper">
-                  <input
-                    type={isPasswordVisible ? 'text' : 'password'}
-                    id="password"
-                    name="password"
-                    placeholder="Masukkan Kata Sandi"
-                    value={formData.password}
-                    onChange={handleChange}
-                  />
-                  <i
-                    className={`fa-solid ${isPasswordVisible ? 'fa-eye' : 'fa-eye-slash'} toggle-password-profil`}
-                    onClick={togglePasswordVisibility}
-                    style={{ cursor: 'pointer' }}
-                  ></i>
-                </div>
-              </div>
-              <div className="tombolFormProfil">
-                <button
-                  type="button"
-                  className="tombolBatal"
-                  onClick={() => {
-                    setEditProfileVisible(false);
-                    setProfileVisible(true);
-                  }}
-                >
-                  Batal
-                </button>
-                <button type="submit" className="tombolSimpan">
-                  Simpan
-                </button>
-              </div>
-            </form>
+{editProfileVisible && (
+  <section id="editProfile">
+    
+        {/* 🔥 BACK BUTTON */}
+    <button className="btn-back-fixed" onClick={() => {
+      setEditProfileVisible(false);
+      setProfileVisible(true);
+    }}>
+      ⬅
+    </button>
+
+    <div className="kontainerProfil">
+      <div className="headerProfil">
+        <div className="fotoProfil">
+          <div
+            className="profile-pic"
+            style={{
+              backgroundImage: `url(${imageUrl})`,
+              backgroundSize: 'cover',
+              backgroundPosition: 'center',
+              width: '100px',
+              height: '100px',
+              borderRadius: '50%',
+            }}
+          ></div>
+
+          <input
+            type="file"
+            accept="image/*"
+            onChange={handleImageChange}
+            style={{ display: 'none' }}
+            id="file-input-edit"
+          />
+
+          <label htmlFor="file-input-edit" className="edit-iconprofil">
+            ✏️
+          </label>
+        </div>
+      </div>
+
+      <form className="formProfil" onSubmit={handleProfileUpdate}>
+        <div className="formGrupProfil">
+          <label>Nama Akun</label>
+          <div className="inputWrapper">
+            <input
+              type="text"
+              name="username"
+              value={formData.username}
+              onChange={handleChange}
+            />
           </div>
-        </section>
-      )}
+        </div>
+
+        <div className="formGrupProfil">
+          <label>Email</label>
+          <div className="inputWrapper">
+            <input
+              type="email"
+              name="email"
+              value={formData.email}
+              onChange={handleChange}
+            />
+          </div>
+        </div>
+
+        <div className="formGrupProfil">
+          <label>Kata Sandi</label>
+          <div className="inputWrapper">
+            <input
+              type={isPasswordVisible ? 'text' : 'password'}
+              name="password"
+              value={formData.password}
+              onChange={handleChange}
+            />
+            <i
+              className={`fa-solid ${isPasswordVisible ? 'fa-eye' : 'fa-eye-slash'}`}
+              onClick={togglePasswordVisibility}
+              style={{ cursor: 'pointer' }}
+            ></i>
+          </div>
+        </div>
+
+        <div className="tombolFormProfil">
+          <button
+            type="button"
+            className="tombolBatal"
+            onClick={() => {
+              setEditProfileVisible(false);
+              setProfileVisible(true);
+            }}
+          >
+            Batal
+          </button>
+
+          <button type="submit" className="tombolSimpan">
+            Simpan
+          </button>
+        </div>
+      </form>
+    </div>
+  </section>
+)}
     </>
   );
 }

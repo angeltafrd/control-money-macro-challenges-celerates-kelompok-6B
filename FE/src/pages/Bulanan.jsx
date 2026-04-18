@@ -1,170 +1,161 @@
-import React, { useEffect, useState } from 'react';
-import axios from 'axios';
-import { useSearchParams } from 'react-router-dom';
+import React, { useEffect, useState } from "react";
+import axios from "axios";
+import { useParams } from "react-router-dom";
 
 function Bulanan() {
-  const [currentDate, setCurrentDate] = useState(new Date());
-  const [searchParams] = useSearchParams();
-  const month = searchParams.get('month');
-  const year = searchParams.get('year');
+  const userId = Number(localStorage.getItem("userId"));
+  const { month, year } = useParams();
+
+  const [currentDate, setCurrentDate] = useState(
+    month && year
+      ? new Date(Number(year), Number(month) - 1)
+      : new Date()
+  );
 
   const [incomeData, setIncomeData] = useState([]);
   const [expenseData, setExpenseData] = useState([]);
-  
   const [totalIncome, setTotalIncome] = useState(0);
   const [totalExpense, setTotalExpense] = useState(0);
-  
+  const [budget, setBudget] = useState(0);
   const [currentBalance, setCurrentBalance] = useState(0);
 
+  useEffect(() => {
+    if (month && year) {
+      setCurrentDate(new Date(Number(year), Number(month) - 1));
+    }
+  }, [month, year]);
+
   const formatDate = (date) => {
-    const formattedDate = new Date(date);
-    return formattedDate.toLocaleDateString(); 
+    return new Date(date).toLocaleDateString("id-ID");
   };
 
   const formatMonthYear = () => {
-    const month = currentDate.toLocaleString('default', { month: 'long' });
-    const year = currentDate.getFullYear();
-    return `${month} ${year}`;
+    return currentDate.toLocaleString("id-ID", {
+      month: "long",
+      year: "numeric",
+    });
   };
 
   useEffect(() => {
-    if (month && year) {
-      fetchData(month, year);
-    }
-  }, [month, year]);
+    if (!userId) return;
 
-  const fetchData = (month, year) => {
-    setIncomeData([]);
-    setExpenseData([]);
-    setTotalIncome(0);
-    setTotalExpense(0);
-    setCurrentBalance(0);
+    const monthNumber = currentDate.getMonth() + 1;
+    const yearNumber = currentDate.getFullYear();
 
-    axios.get(`http://localhost:8081/income?month=${month}&year=${year}`)
+    axios
+      .get(
+        `http://localhost:8081/rekap/bulanan/${userId}/${monthNumber}/${yearNumber}`
+      )
       .then((response) => {
-        const income = response.data.Data;
-        const filteredIncome = income.filter(item => {
-          const transactionDate = new Date(item.date);
-          return transactionDate.getMonth() + 1 === parseInt(month) && transactionDate.getFullYear() === parseInt(year);
-        });
-        setIncomeData(filteredIncome);
-        
-        const incomeTotal = filteredIncome.reduce((total, item) => total + item.amount, 0);
-        setTotalIncome(incomeTotal);
-      })
-      .catch((error) => {
-        console.error('Error fetching income data:', error);
-      });
+        const data = response.data.data || [];
 
-    axios.get(`http://localhost:8081/expenses?month=${month}&year=${year}`)
-      .then((response) => {
-        const expenses = response.data.Data;
-        const filteredExpenses = expenses.filter(item => {
-          const transactionDate = new Date(item.date);
-          return transactionDate.getMonth() + 1 === parseInt(month) && transactionDate.getFullYear() === parseInt(year);
-        });
-        setExpenseData(filteredExpenses);
+        const income = data.filter((t) => t.type === "income");
+        const expense = data.filter((t) => t.type === "expense");
 
-        const expenseTotal = filteredExpenses.reduce((total, item) => total + item.amount, 0);
-        setTotalExpense(expenseTotal);
+        setIncomeData(income);
+        setExpenseData(expense);
+        setTotalIncome(response.data.income || 0);
+        setTotalExpense(response.data.expense || 0);
       })
-      .catch((error) => {
-        console.error('Error fetching expenses data:', error);
-      });
-  };
+      .catch((err) => console.error("Error fetch bulanan:", err));
+
+    axios
+      .get(`http://localhost:8081/budget/${userId}/${monthNumber}/${yearNumber}`)
+      .then((res) => {
+        setBudget(res.data.nominal || 0);
+      })
+      .catch((err) => console.error("Error fetch budget:", err));
+  }, [currentDate, userId]);
 
   useEffect(() => {
-    setCurrentBalance(totalIncome - totalExpense);
-  }, [totalIncome, totalExpense]);
+    setCurrentBalance(budget - totalExpense);
+  }, [budget, totalExpense]);
 
   const goToPrevMonth = () => {
-    const prevMonth = new Date(currentDate);
-    prevMonth.setMonth(currentDate.getMonth() - 1);
-    setCurrentDate(prevMonth);
+    const prev = new Date(currentDate);
+    prev.setMonth(prev.getMonth() - 1);
+    setCurrentDate(prev);
   };
 
   const goToNextMonth = () => {
-    const nextMonth = new Date(currentDate);
-    nextMonth.setMonth(currentDate.getMonth() + 1);
-    setCurrentDate(nextMonth);
+    const next = new Date(currentDate);
+    next.setMonth(next.getMonth() + 1);
+    setCurrentDate(next);
   };
 
-  useEffect(() => {
-    const month = currentDate.getMonth() + 1; 
-    const year = currentDate.getFullYear();
-    fetchData(month, year);
-  }, [currentDate]); 
-
-  useEffect(() => {
-    if (month && year) {
-      setCurrentDate(new Date(year, month - 1)); 
-    }
-  }, [month, year]);
-
   return (
-    <section id="rekap2" style={{ display: 'block' }}>
+    <section id="rekap2">
       <div className="container-rekap">
         <div className="saldo-container-rekap">
-          <p className="saldo-title-rekap">Saldo saat ini</p>
-          <p className="saldo-amount-rekap">Rp. {currentBalance.toLocaleString()}</p>
+          <p>Sisa Budget</p>
+          <p>Rp. {currentBalance.toLocaleString("id-ID")}</p>
         </div>
-        <div className="transaction-summary-rekap">
-          <div className="transaction-box-rekap">
-            <div className="transaction-icon-rekap">
-              <i className="fas fa-arrow-up transaction-amount-out-rekap"></i>
-            </div>
-            <p className="transaction-label-rekap">Pengeluaran</p>
-            <p className="transaction-amount-hari transaction-amount-out-rekap">Rp. {totalExpense.toLocaleString()}</p>
-          </div>
-          <div className="transaction-box-rekap">
-            <div className="transaction-icon-rekap">
-              <i className="fas fa-arrow-down transaction-amount-in-rekap"></i>
-            </div>
-            <p className="transaction-label-rekap">Pemasukan</p>
-            <p className="transaction-amount-hari transaction-amount-in-rekap">Rp. {totalIncome.toLocaleString()}</p>
-          </div>
-        </div>
-      </div>
 
-      <div className="image-container-rekap">
-        <img src="/assets/images/tips2.png" alt="tips2" className="image-rekap" />
+        <div className="transaction-summary-rekap">
+          <div>
+            <p>Pengeluaran</p>
+            <p style={{ color: "red" }}>
+              Rp. {totalExpense.toLocaleString("id-ID")}
+            </p>
+          </div>
+
+          <div>
+            <p>Pemasukan</p>
+            <p style={{ color: "green" }}>
+              Rp. {totalIncome.toLocaleString("id-ID")}
+            </p>
+          </div>
+        </div>
       </div>
 
       <div className="container-bulan">
         <div className="header-bulan">
-          <i className="fas fa-chevron-left prev-bulan" onClick={goToPrevMonth}></i>
+          <button onClick={goToPrevMonth}>◀</button>
           {formatMonthYear()}
-          <i className="fas fa-chevron-right next-bulan" onClick={goToNextMonth}></i>
+          <button onClick={goToNextMonth}>▶</button>
         </div>
+
         <table>
           <thead>
             <tr>
               <th>Tanggal</th>
-              <th>Nama dompet</th>
-              <th>Asal uang</th>
+              <th>Nama Dompet</th>
               <th>Nominal</th>
               <th>Catatan</th>
             </tr>
           </thead>
           <tbody>
-            {incomeData.map((income, index) => (
-              <tr key={index}>
-                <td>{formatDate(income.date)}</td>
-                <td>{income.wallet_name}</td>
-                <td>{income.source}</td>
-                <td className="amount-positive-bulan">+ {income.amount.toLocaleString()}</td>
-                <td>{income.notes || '--'}</td>
+            {incomeData.length === 0 && expenseData.length === 0 ? (
+              <tr>
+                <td colSpan="4" style={{ textAlign: "center" }}>
+                  Tidak ada transaksi bulan ini
+                </td>
               </tr>
-            ))}
-            {expenseData.map((expense, index) => (
-              <tr key={index}>
-                <td>{formatDate(expense.date)}</td>
-                <td>{expense.wallet_name}</td>
-                <td>{expense.source}</td>
-                <td className="amount-negative-bulan">- {expense.amount.toLocaleString()}</td>
-                <td>{expense.notes || '--'}</td>
-              </tr>
-            ))}
+            ) : (
+              <>
+                {incomeData.map((item) => (
+                  <tr key={`income-${item.id}`}>
+                    <td>{formatDate(item.date)}</td>
+                    <td>{item.wallet_name}</td>
+                    <td style={{ color: "green" }}>
+                      + {Number(item.amount).toLocaleString("id-ID")}
+                    </td>
+                    <td>{item.note}</td>
+                  </tr>
+                ))}
+
+                {expenseData.map((item) => (
+                  <tr key={`expense-${item.id}`}>
+                    <td>{formatDate(item.date)}</td>
+                    <td>{item.wallet_name}</td>
+                    <td style={{ color: "red" }}>
+                      - {Number(item.amount).toLocaleString("id-ID")}
+                    </td>
+                    <td>{item.note}</td>
+                  </tr>
+                ))}
+              </>
+            )}
           </tbody>
         </table>
       </div>

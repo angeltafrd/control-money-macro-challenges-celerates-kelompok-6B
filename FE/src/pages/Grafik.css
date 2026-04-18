@@ -1,0 +1,241 @@
+/* ================= CONTAINER ================= */
+#kelolaGrafik {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+/* ================= GRID CHART ================= */
+.chart-grid {
+  width: 100%;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 24px;
+  margin-bottom: 30px;
+}
+
+/* ================= BOX CHART ================= */
+.chart-box {
+  background: #fff;
+  padding: 15px;
+  border-radius: 16px;
+  height: 260px;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.05);
+}
+
+/* ================= LABEL ================= */
+.chart-label {
+  margin-top: 12px;
+  font-weight: 600;
+  font-size: 16px;
+  color: #5b21b6;
+  text-align: center;
+}
+
+/* ================= CANVAS ================= */
+.chart-canvas {
+  position: relative;
+  height: 180px;
+}
+
+/* ================= SUMMARY AREA ================= */
+.kelola-summary {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 25px;
+}
+
+/* ================= NOMINAL (FIX UTAMA) ================= */
+.nominal-budget {
+  font-size: 40px;
+  font-weight: 700;
+  margin: 12px 0 18px 0;
+  text-align: center;
+
+  /* 🔥 FIX GESER DIKIT KE KIRI */
+  transform: translateX(-50px);
+}
+
+/* ================= MONTH SWITCH ================= */
+.month-switch {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  margin-bottom: 10px;
+}
+
+.month-switch span {
+  font-size: 18px;
+  font-weight: 600;
+  min-width: 170px;
+  text-align: center;
+}
+
+/* Panah */
+.month-switch button {
+  background: transparent;
+  border: none;
+  font-size: 18px;
+  cursor: pointer;
+  padding: 4px 6px;
+  transition: 0.2s ease;
+}
+
+.month-switch button:hover {
+  color: #5b21b6;
+  transform: scale(1.15);
+}
+
+/* ================= BUTTON UBAH BUDGET ================= */
+.kelola-summary > button {
+  padding: 10px 18px;
+  border-radius: 10px;
+  border: none;
+  background: #5b21b6;
+  color: white;
+  cursor: pointer;
+  font-weight: 600;
+  transition: 0.2s;
+}
+
+.kelola-summary > button:hover {
+  background: #4c1d95;
+}
+
+/* ================= MAIN BUTTON ================= */
+#kelolaGrafik > button {
+  padding: 10px 18px;
+  border-radius: 10px;
+  border: none;
+  background: #5b21b6;
+  color: white;
+  cursor: pointer;
+  font-weight: 600;
+  transition: 0.2s;
+  margin-bottom: 20px;
+}
+
+#kelolaGrafik > button:hover {
+  background: #4c1d95;
+}
+
+/* ================= OVERLAY ================= */
+.budget-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(4px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 999;
+}
+
+/* ================= MODAL ================= */
+.budget-modal {
+  background: white;
+  padding: 30px;
+  border-radius: 16px;
+  width: 350px;
+  text-align: center;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+  animation: fadeIn 0.25s ease;
+}
+
+.budget-modal h3 {
+  margin-bottom: 20px;
+  color: #5b21b6;
+  font-weight: 600;
+}
+
+/* ================= INPUT ================= */
+.budget-modal input {
+  width: 100%;
+  padding: 12px;
+  border-radius: 10px;
+  border: 1px solid #ddd;
+  margin-bottom: 20px;
+  font-size: 16px;
+  text-align: center;
+  transition: 0.2s;
+}
+
+.budget-modal input:focus {
+  outline: none;
+  border-color: #5b21b6;
+  box-shadow: 0 0 0 2px rgba(91, 33, 182, 0.2);
+}
+
+/* ================= BUTTON GROUP ================= */
+.budget-buttons {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+/* ================= SAVE BUTTON ================= */
+.btn-save {
+  flex: 1;
+  padding: 10px;
+  border-radius: 10px;
+  border: none;
+  background: #5b21b6;
+  color: white;
+  cursor: pointer;
+  font-weight: 600;
+  transition: 0.2s;
+}
+
+.btn-save:hover {
+  background: #4c1d95;
+}
+
+/* ================= CANCEL BUTTON ================= */
+.btn-cancel {
+  flex: 1;
+  padding: 10px;
+  border-radius: 10px;
+  border: none;
+  background: #e5e7eb;
+  cursor: pointer;
+  font-weight: 600;
+  transition: 0.2s;
+}
+
+.btn-cancel:hover {
+  background: #d1d5db;
+}
+
+/* ================= LINK ================= */
+#kelolaGrafik a {
+  display: inline-block;
+  margin-top: 15px;
+  text-decoration: none;
+  color: #5b21b6;
+  font-weight: 600;
+}
+
+#kelolaGrafik a:hover {
+  text-decoration: underline;
+}
+
+/* ================= ANIMATION ================= */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: scale(0.92);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}

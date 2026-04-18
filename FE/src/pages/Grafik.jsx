@@ -1,381 +1,337 @@
-import React, { useState, useEffect } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
-import { Bar } from 'react-chartjs-2';
-import { useUserContext } from '../context/UserContext';
-import axios from 'axios';
+import React, { useState, useEffect } from "react";
+import { Link, useNavigate, useLocation } from "react-router-dom";
+import { Bar } from "react-chartjs-2";
+import axios from "axios";
+import "./Grafik.css";
+
 import {
   Chart as ChartJS,
   CategoryScale,
   LinearScale,
   BarElement,
-  Title,
   Tooltip,
   Legend,
-} from 'chart.js';
+  Title,
+} from "chart.js";
 
-ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend);
+ChartJS.register(
+  CategoryScale,
+  LinearScale,
+  BarElement,
+  Tooltip,
+  Legend,
+  Title
+);
 
 function Grafik() {
+  const navigate = useNavigate();
+  const location = useLocation();
+  const userId = localStorage.getItem("userId");
+
   const [isPopupVisible, setIsPopupVisible] = useState(false);
   const [currentMonth, setCurrentMonth] = useState(new Date());
-  const navigate = useNavigate();
-  const [transaksiPemasukan, setTransaksiPemasukan] = useState([]);
-  const [transaksiPengeluaran, setTransaksiPengeluaran] = useState([]);
-  const [budget, setBudget] = useState(0);
-  const [sisaBudget, setSisaBudget] = useState(0);
-  const [totalBudget, setTotalBudget] = useState(0);
 
-  const groupByWeek = (transactions) => {
-    const weeks = ['1-6', '7-13', '14-20', '21-27', '28-31'];
-    const grouped = weeks.map(() => 0);
-    transactions.forEach((transaction) => {
-      const date = new Date(transaction.date);
-      const week = Math.floor((date.getDate() - 1) / 7);
-      grouped[week] += transaction.amount;
+  const [transactions, setTransactions] = useState([]);
+  const [summary, setSummary] = useState({
+    income: 0,
+    expense: 0,
+    budget: 0,
+    remaining: 0,
+  });
+
+  const [showBudgetForm, setShowBudgetForm] = useState(false);
+  const [budgetInput, setBudgetInput] = useState("");
+
+  /* ================= UTIL ================= */
+  const toNumber = (val) =>
+    parseInt(val?.toString().replace(/\./g, "")) || 0;
+
+  const rupiah = (n) =>
+    "Rp. " + toNumber(n).toLocaleString("id-ID");
+
+  /* ================= PINDAH BULAN ================= */
+  const prevMonth = () =>
+    setCurrentMonth(
+      new Date(currentMonth.getFullYear(), currentMonth.getMonth() - 1, 1)
+    );
+
+  const nextMonth = () =>
+    setCurrentMonth(
+      new Date(currentMonth.getFullYear(), currentMonth.getMonth() + 1, 1)
+    );
+
+  /* ================= FETCH DATA ================= */
+  const fetchSummary = async () => {
+    const m = currentMonth.getMonth() + 1;
+    const y = currentMonth.getFullYear();
+
+    try {
+      const rekapRes = await axios.get(
+        `http://localhost:8081/rekap/bulanan/${userId}/${m}/${y}`
+      );
+
+      const budgetRes = await axios.get(
+        `http://localhost:8081/budget/${userId}/${m}/${y}`
+      );
+
+      const income = rekapRes.data.income || 0;
+      const expense = rekapRes.data.expense || 0;
+      const budget = budgetRes.data.nominal || 0;
+
+      setSummary({
+        income,
+        expense,
+        budget,
+        remaining: budget - expense,
+      });
+    } catch (err) {
+      console.error("Gagal fetch summary", err);
+    }
+  };
+
+  const fetchTransactions = async () => {
+    try {
+      const trxRes = await axios.get(
+        `http://localhost:8081/transactions/${userId}`
+      );
+      setTransactions(trxRes.data || []);
+    } catch (err) {
+      console.error("Gagal fetch transaksi", err);
+    }
+  };
+
+  const fetchAllData = async () => {
+    await fetchTransactions();
+    await fetchSummary();
+  };
+
+  useEffect(() => {
+    if (userId) fetchAllData();
+  }, [currentMonth, userId]);
+
+  // 🔥 Auto refresh jika kembali dari tambah transaksi
+  useEffect(() => {
+    if (location.state?.refresh) {
+      fetchAllData();
+    }
+  }, [location.state]);
+
+  /* ================= SIMPAN BUDGET ================= */
+  const saveBudget = async () => {
+    const m = currentMonth.getMonth() + 1;
+    const y = currentMonth.getFullYear();
+    const nominal = parseInt(budgetInput.replace(/\./g, ""));
+
+    if (!nominal) {
+      alert("Masukkan nominal valid");
+      return;
+    }
+
+    try {
+      await axios.post("http://localhost:8081/budget", {
+        user_id: userId,
+        month: m,
+        year: y,
+        nominal,
+      });
+
+      setBudgetInput("");
+      setShowBudgetForm(false);
+      fetchAllData();
+    } catch (err) {
+      console.error("Gagal simpan budget", err);
+    }
+  };
+
+  /* ================= FILTER BULAN ================= */
+  const filterByMonth = (data) => {
+    const m = currentMonth.getMonth();
+    const y = currentMonth.getFullYear();
+
+    return data.filter((item) => {
+      const d = new Date(item.date);
+      return d.getMonth() === m && d.getFullYear() === y;
     });
-    return grouped;
   };
 
-  useEffect(() => {
-    axios.get('http://localhost:8081/income')
-      .then(response => {
-        setTransaksiPemasukan(response.data.Data);
-      })
-      .catch(error => {
-        console.error("There was an error fetching the pemasukan data:", error);
-      });
+  const trxBulanan = filterByMonth(transactions);
+  const pemasukan = trxBulanan.filter((t) => t.type === "income");
+  const pengeluaran = trxBulanan.filter((t) => t.type === "expense");
 
-    axios.get('http://localhost:8081/expenses')
-      .then(response => {
-        setTransaksiPengeluaran(response.data.Data);
-      })
-      .catch(error => {
-        console.error("There was an error fetching the pengeluaran data:", error);
-      });
+  /* ================= GROUP PER 6 HARI ================= */
+  const group = (data) => {
+    const result = [0, 0, 0, 0, 0];
 
-    axios.get('http://localhost:8081/budget')
-      .then(response => {
-        const budgetData = response.data.Data;
-        setBudget(budgetData.amount || 0); 
-      })
-      .catch(error => {
-        console.error("There was an error fetching the budget data:", error);
-      });
-  }, []);
+    data.forEach((item) => {
+      const day = new Date(item.date).getDate();
+      const amt = toNumber(item.amount);
+      const idx = Math.min(Math.floor((day - 1) / 6), 4);
+      result[idx] += amt;
+    });
 
-  useEffect(() => {
-    const fetchBudgetData = async () => {
-      try {
-        const response = await fetch('http://localhost:8081/budget');
-        if (response.ok) {
-          const data = await response.json();
-          const total = data.Data.reduce((sum, item) => sum + item.nominal, 0); 
-          setTotalBudget(total);
-
-          const expensesResponse = await fetch('http://localhost:8081/expenses');
-          const expensesData = await expensesResponse.json();
-          const totalExpenses = expensesData.Data.reduce((sum, item) => sum + item.amount, 0); 
-
-          setSisaBudget(total - totalExpenses); 
-        } else {
-          console.error('Failed to fetch budget data');
-        }
-      } catch (error) {
-        console.error('Error occurred while fetching budget data:', error);
-      }
-    };
-
-    fetchBudgetData();
-  }, [transaksiPengeluaran]);
-
-  const resetData = () => {
-    setTransaksiPemasukan([]);
-    setTransaksiPengeluaran([]);
+    return result;
   };
 
-  const changeMonth = (direction) => {
-    const newDate = new Date(currentMonth);
-    if (direction === 'prev') {
-      newDate.setMonth(newDate.getMonth() - 1);
-      fetchData(newDate);  
-    } else if (direction === 'next') {
-      newDate.setMonth(newDate.getMonth() + 1);
-      setTransaksiPemasukan([]);
-      setTransaksiPengeluaran([]);
-      setTotalBudget(0);
-      setSisaBudget(0);
-    }
-    setCurrentMonth(newDate);
-  };
+  const weeklyIncome = group(pemasukan);
+  const weeklyExpense = group(pengeluaran);
 
-  const fetchData = (date) => {
-    const monthYear = date.getMonth() + 1; 
-    const year = date.getFullYear(); 
-
-    axios.get(`http://localhost:8081/income?month=${monthYear}&year=${year}`)
-      .then(response => {
-        setTransaksiPemasukan(response.data.Data);
-      })
-      .catch(error => {
-        console.error("There was an error fetching the pemasukan data:", error);
-      });
-
-    axios.get(`http://localhost:8081/expenses?month=${monthYear}&year=${year}`)
-      .then(response => {
-        setTransaksiPengeluaran(response.data.Data);
-      })
-      .catch(error => {
-        console.error("There was an error fetching the pengeluaran data:", error);
-      });
-
-    axios.get(`http://localhost:8081/budget?month=${monthYear}&year=${year}`)
-      .then(response => {
-        const budgetData = response.data.Data;
-        setBudget(budgetData.amount || 0); 
-      })
-      .catch(error => {
-        console.error("There was an error fetching the budget data:", error);
-      });
-  };
-
-  const totalPemasukan = transaksiPemasukan.reduce((total, item) => total + item.amount, 0);
-  const totalPengeluaran = transaksiPengeluaran.reduce((total, item) => total + item.amount, 0);
-
-  const togglePopup = () => {
-    setIsPopupVisible(!isPopupVisible);
-  };
-
-  const handleFormSelection = (type) => {
-    setIsPopupVisible(false);
-    if (type === 'Pemasukan') {
-      navigate('/pemasukan');
-    } else if (type === 'Pengeluaran') {
-      navigate('/pengeluaran');
-    }
-  };
-
-  const monthYearLabel = currentMonth.toLocaleString('id-ID', {
-    month: 'long',
-    year: 'numeric',
+  let sisa = summary.budget;
+  const weeklySisa = weeklyExpense.map((e) => {
+    sisa -= e;
+    return sisa > 0 ? sisa : 0;
   });
 
-  const createBarGradient = (ctx, chartArea) => {
-    if (!chartArea) {
-      return null; 
-    }
-
-    const gradient = ctx.createLinearGradient(0, chartArea.top, 0, chartArea.bottom);
-    gradient.addColorStop(0, 'rgba(55, 21, 111, 0.9)'); 
-    gradient.addColorStop(1, 'rgba(55, 21, 111, 0.6)'); 
-    return gradient;
-  };
-
-
-  const groupByChunks = (transactions, chunkSize = 6) => {
-    const chunks = [];
-    for (let i = 0; i < transactions.length; i += chunkSize) {
-      chunks.push(transactions.slice(i, i + chunkSize));
-    }
-    return chunks.map(chunk => chunk.reduce((sum, item) => sum + item.amount, 0)); 
-  };
-
-  const checkTransactionCount = () => {
-    const totalTransactions = transaksiPemasukan.length + transaksiPengeluaran.length;
-    if (totalTransactions < 30) {
-      alert('Lengkapi transaksi bulan ini untuk melanjutkan ke bulan selanjutnya.');
-    } else {
-      changeMonth('next'); // Jika cukup, lanjutkan ke bulan berikutnya
-    }
-  };
-  
-  const weeklyPemasukan = groupByChunks(transaksiPemasukan);
-  const weeklyPengeluaran = groupByChunks(transaksiPengeluaran);
-
-  const weeklySisaBudget = weeklyPengeluaran.map((expense, index) => {
-    return totalBudget - expense; 
+  const createDataset = (data) => ({
+    labels: ["1-6", "7-12", "13-18", "19-24", "25-30"],
+    datasets: [
+      {
+        data,
+        backgroundColor: "#5b21b6",
+        borderRadius: 6,
+        barThickness: 18,
+      },
+    ],
   });
-
-  const pemasukanData = {
-    labels: ['1-6', '7-12', '13-18', '19-24', '25-30'],
-    datasets: [
-      {
-        label: 'Pemasukan Mingguan',
-        data: weeklyPemasukan,
-        backgroundColor: (context) => {
-          const chart = context.chart;
-          const chartArea = chart.chartArea;
-          return createBarGradient(chart.ctx, chartArea);
-        },
-        barThickness: 20,
-      },
-    ],
-  };
-
-  const pengeluaranData = {
-    labels: ['1-6', '7-12', '13-18', '19-24', '25-30'],
-    datasets: [
-      {
-        label: 'Pengeluaran Mingguan',
-        data: weeklyPengeluaran,
-        backgroundColor: (context) => {
-          const chart = context.chart;
-          const chartArea = chart.chartArea;
-          return createBarGradient(chart.ctx, chartArea);
-        }, barThickness: 20,
-      },
-    ],
-  };
-
-  const sisaBudgetData = {
-    labels: ['1-6', '7-12', '13-18', '19-24', '25-30'],
-    datasets: [
-      {
-        label: 'Sisa Budget Mingguan',
-        data: weeklySisaBudget,
-        backgroundColor: (context) => {
-          const chart = context.chart;
-          const chartArea = chart.chartArea;
-          return createBarGradient(chart.ctx, chartArea);
-        }, barThickness: 20,
-      },
-    ],
-  };
 
   const chartOptions = {
     responsive: true,
     maintainAspectRatio: false,
-    layout: {
-      padding: {
-        top: 20,
-        bottom: 20,
-        left: 10,
-        right: 10,
-      },
-    },
-    scales: {
-      x: {
-        beginAtZero: true,
-        grid: {
-          display: false,
-        },
-      },
-      y: {
-        beginAtZero: true,
-        grid: {
-          drawBorder: false,
-        },
-        ticks: {
-          display: false,
-          font: {
-            size: 17,
-          },
-          color: '#000000',
-        },
-      },
-    },
-    plugins: {
-      legend: {
-        display: false,
-        labels: {
-          font: {
-            size: 17,
-          },
-          color: '#000000',
-        },
-      },
-    },
+    plugins: { legend: { display: false } },
   };
 
   return (
-    <section id="kelolaGrafik" style={{ display: 'block' }}>
+    <section id="kelolaGrafik">
+
       <div className="kelola-summary">
-        <div className="kelola-month-nav">
-          <button
-            id="kelola-prevMonth"
-            className="kelola-navButton"
-            onClick={() => changeMonth('prev')} 
-          >
-            ←
-          </button>
-          <h2 id="kelola-bulanTahun">{monthYearLabel}</h2>
-          <button
-            id="kelola-nextMonth"
-            className="kelola-navButton"
-            onClick={checkTransactionCount}          >
-            →
-          </button>
+        <div className="month-switch">
+        <button onClick={prevMonth}>◀</button>
+<span>
+  {currentMonth.toLocaleString("id-ID", {
+    month: "long",
+    year: "numeric",
+  })}
+</span>
+<button onClick={nextMonth}>▶</button>
         </div>
-        <p>Total Pengeluaran</p>
-        <p>Rp. {totalPengeluaran.toLocaleString()}</p>
-        <p>Sisa Budget Terpantau Aman!</p>
-      </div>
-      <div className="kelola-charts">
-        <div className="kelola-chart-card">
-          <p>Grafik Pemasukan Mingguan</p>
-          <Bar data={pemasukanData} options={chartOptions} />
-        </div>
-        <div className="kelola-chart-card">
-          <p>Sisa Budget Rp. {sisaBudget.toLocaleString()}</p>
-          <Bar data={sisaBudgetData} options={chartOptions} />
-        </div>
-        <div className="kelola-chart-card">
-          <p>Grafik Pengeluaran Mingguan</p>
-          <Bar data={pengeluaranData} options={chartOptions} />
-        </div>
-      </div>
 
-      <section className="kelola-catat-transaksi">
-        <hr className="kelola-line-left" />
-        <p>Catat Transaksi</p>
-        <hr className="kelola-line-right" />
-      </section>
+        <h2 className="nominal-budget"
+          style={{ color: summary.remaining < 0 ? "red" : "#16a34a" }}>
+          {rupiah(summary.remaining)}
+        </h2>
 
-      <div className="container-grafik">
-        {transaksiPemasukan.length === 0 && transaksiPengeluaran.length === 0 ? (
-          <p className='notes-grafik'>Belum ada catatan transaksi</p>
-        ) : (
-          <>
-            {Array.isArray(transaksiPemasukan) && transaksiPemasukan.map((item, index) => (
-              <div className="item" key={index}>
-                <span>{item.source}</span>
-                <span className="income" style={{ color: '#8deb8d', fontWeight: 'bold' }}>
-                  +Rp. {item.amount.toLocaleString()}
-                </span>
-              </div>
-            ))}
-
-            {Array.isArray(transaksiPengeluaran) && transaksiPengeluaran.map((item, index) => (
-              <div className="item" key={index}>
-                <span>{item.source}</span>
-                <span className="expenses" style={{ color: '#f59595', fontWeight: 'bold' }}>
-                  -Rp. {item.amount.toLocaleString()}
-                </span>
-              </div>
-            ))}
-          </>
+                {summary.remaining < 0 && (
+          <p style={{ color: "red", fontWeight: "bold", marginTop: "5px" }}>
+            ⚠ Melebihi budget!
+          </p>
         )}
 
-        <div className="kelola-button-container">
-          <button id="kelola-addRecordBtn" onClick={togglePopup}>+ TAMBAH CATATAN BARU</button>
+        <button onClick={() => setShowBudgetForm(true)}>
+          Ubah Budget
+        </button>
+      </div>
+
+      <div className="chart-grid">
+
+        <div className="chart-box">
+          <div className="chart-canvas">
+            <Bar data={createDataset(weeklyIncome)} options={chartOptions} />
+          </div>
+          <p className="chart-label">Pemasukan</p>
         </div>
+
+        <div className="chart-box">
+          <div className="chart-canvas">
+            <Bar data={createDataset(weeklySisa)} options={chartOptions} />
+          </div>
+          <p className="chart-label">Sisa Budget</p>
+        </div>
+
+        <div className="chart-box">
+          <div className="chart-canvas">
+            <Bar data={createDataset(weeklyExpense)} options={chartOptions} />
+          </div>
+          <p className="chart-label">Pengeluaran</p>
+        </div>
+
       </div>
 
-      <div className="kelola-rekap-container">
-        <Link to="/rekap" className="kelola-rekap-button">
-          Cek rekap keuanganmu
-        </Link>
-      </div>
+      <button onClick={() => setIsPopupVisible(true)}>
+        + TAMBAH CATATAN
+      </button>
 
+      {/* Popup Tambah Catatan */}
       {isPopupVisible && (
-        <div className="grafik-popup-overlay">
-          <div className="grafik-popup">
-            <button onClick={togglePopup}>&times;</button>
-            <p id="kelola-pemasukanBtn" onClick={() => handleFormSelection('Pemasukan')}>Pemasukan</p>
-            <hr />
-            <p id="kelola-pengeluaranBtn" onClick={() => handleFormSelection('Pengeluaran')}>Pengeluaran</p>
+        <div className="budget-overlay">
+          <div className="budget-modal">
+            <h3>Pilih Jenis Catatan</h3>
+
+            <div className="budget-buttons">
+              <button
+                className="btn-save"
+                onClick={() => navigate("/pemasukan")}
+              >
+                Pemasukan
+              </button>
+
+              <button
+                className="btn-save"
+                onClick={() => navigate("/pengeluaran")}
+              >
+                Pengeluaran
+              </button>
+            </div>
+
+            <div style={{ marginTop: "15px" }}>
+              <button
+                className="btn-cancel"
+                onClick={() => setIsPopupVisible(false)}
+              >
+                Batal
+              </button>
+            </div>
           </div>
         </div>
       )}
+
+      {/* 🔥 Popup Ubah Budget (PAKAI CSS ASLI KAMU) */}
+      {showBudgetForm && (
+        <div className="budget-overlay">
+          <div className="budget-modal">
+            <h3>Ubah Budget</h3>
+
+            <input
+              type="text"
+              placeholder="Masukkan nominal"
+              value={budgetInput}
+              onChange={(e) =>
+                setBudgetInput(
+                  e.target.value
+                    .replace(/\D/g, "")
+                    .replace(/\B(?=(\d{3})+(?!\d))/g, ".")
+                )
+              }
+            />
+
+            <div className="budget-buttons">
+              <button
+                className="btn-cancel"
+                onClick={() => setShowBudgetForm(false)}
+              >
+                Batal
+              </button>
+
+              <button
+                className="btn-save"
+                onClick={saveBudget}
+              >
+                Simpan
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      <Link to="/rekap">Cek Rekap</Link>
     </section>
   );
 }

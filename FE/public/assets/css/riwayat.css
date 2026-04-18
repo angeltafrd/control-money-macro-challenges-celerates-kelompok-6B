@@ -1,11 +1,13 @@
-/* RIWAYAT */
+/* =========================
+   RIWAYAT - MODERN VERSION
+========================= */
 
-/* Base styles */
+/* Container utama */
 .container-center-riwayat {
   display: flex;
   justify-content: center;
   align-items: flex-start;
-  padding-top: 20px;
+  padding-top: 30px;
   min-height: 90vh;
   margin-bottom: 50px;
 }
@@ -13,155 +15,227 @@
 .content-wrapper-riwayat {
   width: 100%;
   max-width: 800px;
+  padding: 0 1rem;
 }
 
-.custom-card-riwayat {
-  background-color: #fff;
-  border-radius: 0.5rem;
-  padding: 2rem;
-  width: 100%;
-  max-width: 60rem;
-}
+/* =========================
+   FILTER BUTTON
+========================= */
 
-.custom-header-riwayat span {
-  position: relative;
-  cursor: pointer;
-  font-size: 1.125rem;
-}
-
-.custom-header-riwayat span.active {
-  text-decoration: none; /* Remove default underline */
-}
-
-.custom-header-riwayat span.active::after {
-  content: '';
-  position: absolute;
-  bottom: -4px;
-  left: 0;
-  width: 100%;
-  height: 2px;
-  background-color: #fff;
-  border-radius: 2px;
-}
-
-.custom-header-riwayat {
-  font-size: 1.125rem;
-  font-weight: bold;
-  color: #fff;
-  margin-bottom: 20px;
+.filter-container {
   display: flex;
   justify-content: center;
-  gap: 2rem; /* Adjusted for better alignment */
+  gap: 1rem;
+  margin-bottom: 1.5rem;
 }
 
-.custom-total-riwayat {
-  background-color: #2d0f85;
-  color: #fff;
-  text-align: center;
-  padding: 0.5rem;
-  border-radius: 10px;
-  margin-bottom: 1rem;
-  font-size: 1rem;
-  max-width: 20rem;
-  width: 100%;
-  margin-left: auto;
-  margin-right: auto;
-  display: block;
-  margin-top: -40px;
+.filter-container button {
+  background: transparent;
+  border: 2px solid #ffffff;
+  color: #ffffff;
+  padding: 0.5rem 1.3rem;
+  border-radius: 25px;
+  cursor: pointer;
+  font-size: 0.95rem;
+  transition: all 0.3s ease;
 }
 
-.custom-item-riwayat {
-  background-color: #6938ef;
-  color: #fff;
+.filter-container button:hover {
+  background-color: #ffffff;
+  color: #5b21b6;
+}
+
+.active-filter {
+  background-color: #ffffff !important;
+  color: #5b21b6 !important;
+  font-weight: bold;
+}
+
+/* =========================
+   SUMMARY BOX
+========================= */
+
+.summary-container {
+  background: linear-gradient(135deg, #2d0f85, #6938ef);
+  color: #ffffff;
   padding: 1rem;
-  border-radius: 0.5rem;
-  margin-bottom: 0.5rem;
+  border-radius: 15px;
+  text-align: center;
+  margin-bottom: 1.5rem;
+  font-weight: 500;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
 }
 
-.custom-item-riwayat .d-flex {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
+.summary-container div {
+  margin-bottom: 0.3rem;
 }
 
-.custom-item-riwayat span {
-  color: #fff;
+/* =========================
+   LIST CONTAINER
+========================= */
+
+.list-container {
+  background-color: #ffffff;
+  border-radius: 15px;
+  padding: 1.5rem;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
 }
 
-.custom-item-riwayat hr {
-  border-top: 1px solid #9f7aea;
-  margin: 1rem 0;
+/* =========================
+   TRANSACTION CARD
+========================= */
+
+.transaction-card {
+  padding: 1rem 0;
 }
 
-/* Responsive styles */
-
-/* Tablet screens */
-@media (max-width: 1024px) {
-  .custom-header-riwayat {
-    flex-direction: row;
-    gap: 1rem;
-    text-align: center;
-  }
-
-  .custom-card-riwayat {
-    padding: 1.5rem;
-  }
-
-  .custom-total-riwayat {
-    margin-top: -20px;
-  }
+.transaction-card:not(:last-child) {
+  border-bottom: 1px solid #0055ff;
 }
 
-/* Phone screens */
+/* Date */
+.transaction-header {
+  font-size: 0.85rem;
+  color: #6b7280;
+  margin-bottom: 0.4rem;
+}
+
+/* Amount */
+.amount-income {
+  color: #16a34a;
+  font-weight: bold;
+  font-size: 1.1rem;
+}
+
+.amount-expense {
+  color: #dc2626;
+  font-weight: bold;
+  font-size: 1.1rem;
+}
+
+/* Hover effect */
+.transaction-card:hover {
+  transform: translateY(-2px);
+  transition: 0.2s ease;
+}
+
+/* =========================
+   RESPONSIVE
+========================= */
+
 @media (max-width: 768px) {
-  .custom-header-riwayat {
-    gap: 1rem;
-    font-size: 1rem;
-    flex-direction: row;
+  .filter-container {
+    flex-wrap: wrap;
+    gap: 0.5rem;
   }
-  .custom-header-riwayat span {
+
+  .filter-container button {
+    font-size: 0.85rem;
+    padding: 0.4rem 1rem;
+  }
+
+  .summary-container {
     font-size: 0.9rem;
   }
 
-  .custom-card-riwayat {
+  .list-container {
     padding: 1rem;
   }
 
-  .custom-total-riwayat {
-    font-size: 0.9rem;
-    max-width: 100%;
-  }
-
-  .custom-item-riwayat {
-    padding: 0.8rem;
+  .amount-income,
+  .amount-expense {
+    font-size: 1rem;
   }
 }
 
 @media (max-width: 480px) {
   .container-center-riwayat {
-    padding-top: 10px;
+    padding-top: 15px;
   }
 
-  .custom-header-riwayat {
-    font-size: 0.875rem;
-    gap: 0.5rem;
-    flex-direction: row;
-  }
-  .custom-header-riwayat span {
+  .summary-container {
+    padding: 0.8rem;
     font-size: 0.85rem;
   }
 
-  .custom-card-riwayat {
-    padding: 0.5rem;
+  .list-container {
+    padding: 0.8rem;
   }
+}
+.search-input {
+  width: 100%;
+  padding: 8px;
+  margin: 10px 0;
+  border-radius: 6px;
+  border: 1px solid #ddd;
+}
 
-  .custom-total-riwayat {
-    font-size: 0.8rem;
-    margin-top: -10px;
-  }
+.transaction-description {
+  font-weight: 500;
+  margin: 6px 0;
+}
 
-  .custom-item-riwayat {
-    padding: 0.5rem;
-    font-size: 0.9rem;
-  }
+.transaction-actions {
+  margin-top: 8px;
+  display: flex;
+  gap: 10px;
+}
+
+.btn-edit {
+  background: #3b82f6;
+  color: white;
+  border: none;
+  padding: 5px 10px;
+  border-radius: 6px;
+}
+
+.btn-delete {
+  background: #ef4444;
+  color: white;
+  border: none;
+  padding: 5px 10px;
+  border-radius: 6px;
+}
+
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.4);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.modal-box {
+  background: white;
+  padding: 20px;
+  border-radius: 12px;
+  width: 300px;
+}
+
+.modal-box input,
+.modal-box select {
+  width: 100%;
+  margin-bottom: 10px;
+  padding: 6px;
+}
+
+.modal-actions {
+  display: flex;
+  justify-content: space-between;
+}
+.transaction-card {
+  padding: 1rem 0;
+  color: #111827; /* 🔥 INI FIX UTAMA (biar teks jadi gelap) */
+}
+.transaction-description {
+  font-weight: 500;
+  margin: 6px 0;
+  color: #1f2937; /* teks deskripsi */
+}
+
+.transaction-header {
+  font-size: 0.85rem;
+  color: #4b5563; /* lebih jelas dari sebelumnya */
+  margin-bottom: 0.4rem;
 }

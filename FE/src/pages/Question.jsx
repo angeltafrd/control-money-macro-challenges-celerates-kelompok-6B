@@ -48,9 +48,9 @@ function Question() {
 
 const faqItems = [
   {
-    question: 'Apa fungsi fitur "Dompet" di Control Money?',
+    question: 'Apa fungsi fitur "Kelola Dompet" di Control Money?',
     answer:
-      'Dompet adalah tempat untuk mencatat dan memantau saldo dari berbagai akun keuangan yang Anda miliki, seperti rekening bank, e-wallet, atau uang tunai. Fitur ini membantu Anda melacak posisi keuangan secara keseluruhan.',
+      'Kelola Dompet adalah tempat untuk mencatat dan memantau saldo dari berbagai akun keuangan yang Anda miliki, seperti rekening bank, e-wallet, atau uang tunai. Fitur ini membantu Anda melacak posisi keuangan secara keseluruhan.',
   },
   {
     question: 'Bagaimana cara menggunakan fitur "Kelola Keuangan"?',
@@ -58,7 +58,7 @@ const faqItems = [
       'Anda dapat menggunakan fitur ini dengan memilih kategori pengeluaran atau pemasukan dan mencatat transaksi sesuai kebutuhan Anda.',
   },
   {
-    question: 'Bagaimana cara menambahkan akun di fitur "Dompet"?',
+    question: 'Bagaimana cara menambahkan akun di fitur "Kelola Dompet"?',
     answer:
       'Anda dapat menambahkan akun dengan memilih opsi "Tambah Akun" dan mengisi detail yang diperlukan.',
   },
@@ -68,18 +68,13 @@ const faqItems = [
       'Rekap Keuangan adalah laporan yang menunjukkan ringkasan pemasukan dan pengeluaran Anda dalam periode tertentu.',
   },
   {
-    question: 'Apakah fitur "Riwayat" bisa melihat transaksi sebelumnya?',
+    question: 'Apakah fitur "Lihat Riwayat" bisa melihat transaksi sebelumnya?',
     answer:
-      'Ya, fitur Riwayat memungkinkan Anda untuk melihat semua transaksi yang telah dicatat sebelumnya.',
-  },
-  {
-    question: 'Apakah laporan di "Rekap Keuangan" bisa diunduh?',
-    answer:
-      'Ya, Anda dapat mengunduh laporan rekap keuangan dalam format PDF atau Excel.',
+      'Ya, fitur Lihat Riwayat memungkinkan Anda untuk melihat semua transaksi yang telah dicatat sebelumnya.',
   },
   {
     question:
-      'Apakah saldo di "Dompet" akan otomatis terupdate saat saya mencatat pengeluaran/pemasukan di "Kelola Keuangan"?',
+      'Apakah saldo di "Kelola Dompet" akan otomatis terupdate saat saya mencatat pemasukan di "Kelola Keuangan"?',
     answer:
       'Ya, saldo di Dompet akan otomatis terupdate setiap kali Anda mencatat transaksi.',
   },
@@ -89,9 +84,9 @@ const faqItems = [
       'Anda dapat mencari transaksi dengan menggunakan fitur pencarian yang tersedia di halaman Riwayat.',
   },
   {
-    question: 'Apakah saya bisa mengedit atau menghapus transaksi di "Kelola Keuangan"?',
+    question: 'Apakah saya bisa mengedit atau menghapus nominal dan nama dompet di "Kelola Dompet"?',
     answer:
-      'Ya, Anda dapat mengedit atau menghapus transaksi yang telah dicatat melalui fitur Kelola Keuangan.',
+      'Ya, Anda dapat mengedit atau menghapus nominal dan nama dompet yang telah ditentukan.',
   },
 ];
 

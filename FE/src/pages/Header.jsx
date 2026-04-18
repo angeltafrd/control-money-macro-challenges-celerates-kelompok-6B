@@ -10,44 +10,55 @@ function Header() {
   const toggleMenu = () => setIsMenuOpen(!isMenuOpen);
 
   const navigateToHome = () => {
-    navigate('/'); 
+    navigate('/');
   };
 
   return (
     <header>
       <nav className="navbar-container">
         <div className="navbar-header">
-          <div className="logo header-item" onClick={navigateToHome} style={{ cursor: 'pointer' }}>
+          <div
+            className="logo header-item"
+            onClick={navigateToHome}
+            style={{ cursor: 'pointer' }}
+          >
             <img
               src="/assets/images/Logo fix.png"
               alt="Logo fix"
               className="logo-image"
             />
           </div>
+
           <button id="navbar-toggler" onClick={toggleMenu}>
             <span className="material-icons" id="navbar-toggler-icon">
               {isMenuOpen ? 'close' : 'menu'}
             </span>
           </button>
         </div>
+
         <div
           className={`navbar-menu ${isMenuOpen ? 'show' : ''}`}
           onClick={() => setIsMenuOpen(false)}
         >
           <ul className="navbar">
             <li className="header-item">
-              <Link to="/dompet">Dompet</Link>
+              <Link to="/dompet">Kelola Dompet</Link>
             </li>
+
+            {/* ✅ SUDAH GANTI KE /grafik */}
             <li className="header-item">
-              <Link to="/kelola">Kelola Keuangan</Link>
+              <Link to="/grafik">Kelola Keuangan</Link>
             </li>
+
             <li className="header-item">
               <Link to="/rekap">Rekap Keuangan</Link>
             </li>
+
             <li className="header-item">
-              <Link to="/riwayat">Riwayat</Link>
+              <Link to="/riwayat">Lihat Riwayat</Link>
             </li>
           </ul>
+
           <div className="auth-buttons">
             {isLoggedIn ? (
               <Link to="/profil">
@@ -69,7 +80,11 @@ function Header() {
                     Daftar
                   </Link>
                 </button>
-                <button className="login-btn header-item" onClick={handleLogin}>
+
+                <button
+                  className="login-btn header-item"
+                  onClick={handleLogin}
+                >
                   <Link to="/masuk" className="masuk">
                     Masuk
                   </Link>

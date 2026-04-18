@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import axios from "axios";
 
 function Hubungi() {
   const [formData, setFormData] = useState({
@@ -18,15 +19,33 @@ function Hubungi() {
     }));
   };
 
-  const handleSubmit = (e) => {
+  // ✅ FIX SUBMIT KE BACKEND
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    setIsPopupOpen(true); 
-    setFormData({
-      email: "",
-      username: "",
-      phone: "",
-      message: "",
-    }); // Reset form data setelah submit
+
+    try {
+      await axios.post("http://localhost:8081/contact", {
+        name: formData.username,
+        email: formData.email,
+        phone: formData.phone,
+        message: formData.message,
+      });
+
+      // tampilkan popup
+      setIsPopupOpen(true);
+
+      // reset form
+      setFormData({
+        email: "",
+        username: "",
+        phone: "",
+        message: "",
+      });
+
+    } catch (err) {
+      console.error(err);
+      alert("Gagal mengirim pesan");
+    }
   };
 
   return (
@@ -89,15 +108,18 @@ function Hubungi() {
             </div>
           </form>
         </div>
+
         <div className="contact-info">
           <img src="/assets/images/Logo fix.png" alt="Control Money logo" />
           <p className="p-large">
             Terima kasih telah mengunjungi Control Money! Kami siap membantu Anda dalam
             mengelola keuangan dan memberikan solusi terbaik untuk kebutuhan finansial Anda.
           </p>
-          <p className="p-small">Kami sangat menjaga privasi dan keamanan data pribadi Anda. Setiap informasi yang Anda
-            bagikan dengan kami akan dilindungi sesuai dengan kebijakan privasi kami dan standar keamanan terbaik. Kami
-            berkomitmen untuk menjaga kerahasiaan informasi Anda.</p>
+          <p className="p-small">
+            Kami sangat menjaga privasi dan keamanan data pribadi Anda. Setiap informasi yang Anda
+            bagikan dengan kami akan dilindungi sesuai dengan kebijakan privasi kami dan standar keamanan terbaik.
+            Kami berkomitmen untuk menjaga kerahasiaan informasi Anda.
+          </p>
         </div>
       </div>
 

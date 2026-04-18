@@ -5,7 +5,7 @@ function Index() {
   const navigate = useNavigate();
 
   const handleButtonClick = () => {
-    navigate('/kelola'); 
+    navigate('/grafik'); 
   };
 
   return (

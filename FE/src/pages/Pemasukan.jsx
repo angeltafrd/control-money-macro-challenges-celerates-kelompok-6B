@@ -1,120 +1,138 @@
-import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 
 function Pemasukan() {
-  const [nominal, setNominal] = useState('');
   const navigate = useNavigate();
+  const userId = Number(localStorage.getItem("userId"));
 
-  const formatRupiah = (nominal) => {
-    let numberString = nominal.replace(/\D/g, '');
+  const [nominal, setNominal] = useState("");
+  const [tanggal, setTanggal] = useState("");
+  const [walletId, setWalletId] = useState("");
+  const [wallets, setWallets] = useState([]);
+  const [source, setSource] = useState("");
+  const [notes, setNotes] = useState("");
 
-    return numberString.replace(/\B(?=(\d{3})+(?!\d))/g, '.');
-  };
+  useEffect(() => {
+    fetch(`http://localhost:8081/wallets/${userId}`)
+      .then(res => res.json())
+      .then(data => {
+        setWallets(data);
+        if (data.length > 0) {
+          setWalletId(data[0].id);
+        }
+      })
+      .catch(err => console.error(err));
+  }, [userId]);
 
-  const handleNominalChange = (e) => {
-    const value = e.target.value;
-    setNominal(formatRupiah(value));
-  };
+  const formatRupiah = (v) =>
+    v.replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ".");
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-  
-    const formData = {
-      date: e.target.date.value,
-      walletName: e.target.walletName.value,
-      source: e.target.source.value,
-      amount: parseInt(nominal.replace(/\./g, ''), 10), 
-      notes: e.target.notes.value,
-    };
-  
-    const wallets = JSON.parse(localStorage.getItem("wallets")) || [];
-  
-    const walletIndex = wallets.findIndex(
-      (wallet) => wallet.name.toLowerCase() === formData.walletName.toLowerCase()
-    );
-  
-    if (walletIndex === -1) {
-      alert("Nama dompet tidak ditemukan!");
-      return;
-    }
-  
-    wallets[walletIndex].balance += formData.amount;
-    localStorage.setItem("wallets", JSON.stringify(wallets));
-  
+
+    const amount = parseInt(nominal.replace(/\./g, ""), 10);
+    if (!amount) return alert("Nominal tidak valid");
+
     try {
-      const response = await fetch('http://localhost:8081/add-income', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(formData),
+      const response = await fetch("http://localhost:8081/transactions", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          user_id: userId,
+          wallet_id: walletId,
+          type: "income",
+          amount: amount,
+          note: notes,
+          date: tanggal
+            ? `${tanggal} ${new Date().toTimeString().slice(0, 8)}`
+            : new Date().toISOString().slice(0, 19).replace("T", " "),
+        }),
       });
-  
-      if (response.ok) {
-        alert('Pemasukan berhasil disimpan!');
-        navigate('/grafik'); 
-      } else {
-        alert('Gagal menyimpan pemasukan.');
+
+      const result = await response.json();
+
+      if (!response.ok) {
+        alert(result.message);
+        return;
       }
-    } catch (error) {
-      console.error('Error submitting income:', error);
+
+      alert("Pemasukan berhasil ditambahkan");
+      navigate("/grafik", { state: { refresh: true } });
+
+    } catch (err) {
+      console.error(err);
+      alert("Server error");
     }
-  };  
+  };
 
   return (
-    <section id="pemasukan" style={{ display: 'block' }}>
-      <div className="inputkelola-header-and-form">
-        <h2>Pemasukan</h2>
-        <div className="inputkelola-form-and-illustration">
-          <form id="income-form" onSubmit={handleSubmit}>
-            <div className="inputkelola-form-group">
-              <label className="inputkelola-date-label" htmlFor="date">Tanggal</label>
-              <input type="date" id="date" placeholder="Tanggal-Bulan-Tahun" required />
+<section id="pemasukan">
+
+  {/* 🔥 BACK BUTTON */}
+  <button className="btn-back-fixed" onClick={() => navigate(-1)}>
+    ⬅
+  </button>
+
+  <div className="inputkelola-header-and-form">
+    <h2>Pemasukan</h2>
+
+    <div className="inputkelola-form-and-illustration">
+      <form onSubmit={handleSubmit}>
+        <div className="inputkelola-form-group">
+          <label>Tanggal</label>
+          <input
+            type="date"
+            value={tanggal}
+            onChange={(e) => setTanggal(e.target.value)}
+            required
+          />
             </div>
+
             <div className="inputkelola-form-group">
-              <label className="inputkelola-wallet-name-label" htmlFor="walletName">Nama Dompet</label>
+              <label>Pilih Dompet</label>
+              <select
+                value={walletId}
+                onChange={(e) => setWalletId(Number(e.target.value))}
+                required
+              >
+                {wallets.map(wallet => (
+                  <option key={wallet.id} value={wallet.id}>
+                    {wallet.name}
+                  </option>
+                ))}
+              </select>
+            </div>
+
+            <div className="inputkelola-form-group">
+              <label>Asal Uang</label>
               <input
-                type="text"
-                id="walletName"
-                placeholder="Masukkan nama dompet anda"
+                value={source}
+                onChange={(e) => setSource(e.target.value)}
                 required
               />
             </div>
+
             <div className="inputkelola-form-group">
-              <label className="inputkelola-needs-label" htmlFor="source">Asal Uang</label>
+              <label>Nominal</label>
               <input
-                type="text"
-                id="source"
-                placeholder="Asal Pendapatan Anda"
-                required
-              />
-            </div>
-            <div className="inputkelola-form-group">
-              <label className="inputkelola-amount-label" htmlFor="amount">Nominal</label>
-              <input
-                type="text"
-                id="amount"
-                placeholder="Rp."
                 value={nominal}
-                onChange={handleNominalChange}
+                onChange={(e) => setNominal(formatRupiah(e.target.value))}
                 required
               />
             </div>
+
             <div className="inputkelola-form-group inputkelola-full-width">
-              <label className="inputkelola-notes-label" htmlFor="notes">Catatan</label>
               <textarea
-                id="notes"
-                placeholder="Masukkan catatan tambahan"
-                rows="4"
-                required
-              ></textarea>
-              <button className="btn-kelola" type="submit">
-                Simpan
-              </button>
+                value={notes}
+                onChange={(e) => setNotes(e.target.value)}
+                placeholder="Catatan"
+              />
+              <button className="btn-kelola">Simpan</button>
             </div>
           </form>
+
           <div className="inputkelola-illustration">
-            <img src="/assets/images/pemasukan.png" alt="Smartphone" />
+            <img src="/assets/images/pemasukan.png" alt="" />
           </div>
         </div>
       </div>

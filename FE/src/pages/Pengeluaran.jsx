@@ -1,147 +1,166 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 
 function Pengeluaran() {
-  const [tanggal, setTanggal] = useState("");
-  const [namaDompet, setNamaDompet] = useState("");
-  const [kebutuhan, setKebutuhan] = useState("");
+  const navigate = useNavigate();
+  const userId = Number(localStorage.getItem("userId"));
+
   const [nominal, setNominal] = useState("");
+  const [tanggal, setTanggal] = useState("");
+  const [walletId, setWalletId] = useState(null);
+  const [wallets, setWallets] = useState([]);
+  const [kebutuhan, setKebutuhan] = useState("");
   const [catatan, setCatatan] = useState("");
 
-  const navigate = useNavigate();
+  useEffect(() => {
+    if (!userId) return;
+
+    fetch(`http://localhost:8081/wallets/${userId}`)
+      .then((res) => res.json())
+      .then((data) => {
+        setWallets(data);
+
+        if (data.length > 0) {
+          setWalletId(data[0].id); // ambil wallet pertama
+        }
+      })
+      .catch((err) => console.error("Error fetch wallet:", err));
+  }, [userId]);
+
+  const formatRupiah = (value) => {
+    let numberString = value.replace(/\D/g, "");
+    return numberString.replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+  };
+
+  const handleNominalChange = (e) => {
+    setNominal(formatRupiah(e.target.value));
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-  
-    const expenseAmount = parseInt(String(nominal).replace(/\./g, ""), 10);
-  
+
+    if (!walletId) {
+      alert("Wallet belum tersedia. Tambahkan wallet dulu.");
+      return;
+    }
+
+    const expenseAmount = parseInt(nominal.replace(/\./g, ""), 10);
+
     if (isNaN(expenseAmount) || expenseAmount <= 0) {
       alert("Nominal tidak valid!");
       return;
     }
-  
-    const wallets = JSON.parse(localStorage.getItem("wallets")) || [];
-  
-    const walletIndex = wallets.findIndex(
-      (wallet) => wallet.name.toLowerCase() === namaDompet.toLowerCase()
-    );
-  
-    if (walletIndex === -1) {
-      alert("Nama dompet tidak ditemukan!");
-      return;
-    }
-  
-    if (wallets[walletIndex].balance < expenseAmount) {
-      alert("Saldo tidak mencukupi!");
-      return;
-    }
-  
-    wallets[walletIndex].balance -= expenseAmount;
-    localStorage.setItem("wallets", JSON.stringify(wallets));
-  
-    const data = {
-      date: tanggal,
-      walletName: namaDompet,
-      source: kebutuhan,
+
+   const finalDate =
+  tanggal
+    ? `${tanggal} ${new Date().toTimeString().slice(0, 8)}`
+    : new Date().toISOString().slice(0, 19).replace("T", " ");
+
+    const dataKirim = {
+      user_id: userId,
+      wallet_id: walletId,
+      type: "expense",
       amount: expenseAmount,
-      notes: catatan,
+      note: catatan || "",
+      date: finalDate,
     };
-  
+
+    console.log("DATA DIKIRIM:", dataKirim);
+
     try {
-      const response = await fetch("http://localhost:8081/add-expense", {
+      const response = await fetch("http://localhost:8081/transactions", {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(data),
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(dataKirim),
       });
-  
+
       const result = await response.json();
-  
-      if (result.Message === "Expense added successfully") {
-        alert("Pengeluaran berhasil disimpan!");
-        navigate("/grafik");
-      } else {
-        console.log("Error: ", result);
+
+      if (!response.ok) {
+        alert(result.message || "Gagal tambah transaksi");
+        return;
       }
-    } catch (error) {
-      console.error("Error: ", error);
+
+      alert("Transaksi berhasil!");
+      navigate("/grafik", { state: { refresh: true } });
+
+    } catch (err) {
+      console.error(err);
+      alert("Server error");
     }
-  };  
-
-  const formatNominal = (value) => {
-    return new Intl.NumberFormat("id-ID").format(value);
-  };
-
-  const handleNominalChange = (e) => {
-    const inputValue = e.target.value.replace(/[^\d]/g, "");
-    setNominal(inputValue ? parseInt(inputValue, 10) : "");
   };
 
   return (
-    <section id="pengeluaran" style={{ display: "block" }}>
+    <section id="pengeluaran">
+      
+  {/* 🔥 BACK BUTTON */}
+  <button className="btn-back-fixed" onClick={() => navigate(-1)}>
+    ⬅
+  </button>
+
       <div className="inputkelola-header-and-form">
         <h2>Pengeluaran</h2>
+
         <div className="inputkelola-form-and-illustration">
-          <form id="expense-form" onSubmit={handleSubmit}>
+          <form onSubmit={handleSubmit}>
             <div className="inputkelola-form-group">
-              <label className="inputkelola-date-label">Tanggal</label>
+              <label>Tanggal</label>
               <input
                 type="date"
-                placeholder="Tanggal-Bulan-Tahun"
                 value={tanggal}
                 onChange={(e) => setTanggal(e.target.value)}
-                required
               />
             </div>
+
             <div className="inputkelola-form-group">
-              <label className="inputkelola-wallet-name-label">
-                Nama Dompet
-              </label>
-              <input
-                type="text"
-                placeholder="Masukkan nama dompet anda"
-                value={namaDompet}
-                onChange={(e) => setNamaDompet(e.target.value)}
+              <label>Pilih Dompet</label>
+              <select
+                value={walletId || ""}
+                onChange={(e) => setWalletId(Number(e.target.value))}
                 required
-              />
+              >
+                {wallets.map((wallet) => (
+                  <option key={wallet.id} value={wallet.id}>
+                    {wallet.name}
+                  </option>
+                ))}
+              </select>
             </div>
+
             <div className="inputkelola-form-group">
-              <label className="inputkelola-needs-label">Kebutuhan</label>
+              <label>Kebutuhan</label>
               <input
                 type="text"
-                placeholder="Tulis kebutuhan anda"
                 value={kebutuhan}
                 onChange={(e) => setKebutuhan(e.target.value)}
                 required
               />
             </div>
+
             <div className="inputkelola-form-group">
-              <label className="inputkelola-amount-label">Nominal</label>
+              <label>Nominal</label>
               <input
                 type="text"
-                placeholder="Rp."
-                value={nominal ? formatNominal(nominal) : ""}
+                value={nominal}
                 onChange={handleNominalChange}
                 required
               />
             </div>
+
             <div className="inputkelola-form-group inputkelola-full-width">
-              <label className="inputkelola-notes-label">Catatan</label>
               <textarea
-                placeholder="Masukkan catatan tambahan"
-                rows="4"
                 value={catatan}
                 onChange={(e) => setCatatan(e.target.value)}
-                required
-              ></textarea>
+                placeholder="Catatan"
+              />
               <button className="btn-kelola" type="submit">
                 Simpan
               </button>
             </div>
           </form>
+
           <div className="inputkelola-illustration">
-            <img src="/assets/images/pengeluaran.png" alt="Ilustrasi" />
+            <img src="/assets/images/pengeluaran.png" alt="" />
           </div>
         </div>
       </div>

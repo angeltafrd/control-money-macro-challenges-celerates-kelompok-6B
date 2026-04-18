@@ -2,134 +2,143 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 
 function Dompet() {
-  const [wallets, setWallets] = useState(() => {
-    const savedWallets = localStorage.getItem("wallets");
-    return savedWallets ? JSON.parse(savedWallets) : [
-      { name: "BCA", balance: 0 },
-      { name: "BRI", balance: 0 },
-      { name: "DANA", balance: 0 },
-      { name: "Gopay", balance: 0 },
-      { name: "ShopeePay", balance: 0 },
-      { name: "Tunai", balance: 0 },
-    ];
-  });
 
+  const userId = localStorage.getItem("userId"); // 🔥 penting
+
+  const [wallets, setWallets] = useState([]);
   const [isFormVisible, setIsFormVisible] = useState(false);
-  const [selectedWallet, setSelectedWallet] = useState("");
-  const [newAmount, setNewAmount] = useState("");
+  const [editingId, setEditingId] = useState(null);
+
   const [newWalletName, setNewWalletName] = useState("");
+  const [newAmount, setNewAmount] = useState("");
+
+
+  /* ================= FETCH ================= */
+  const fetchWallets = async () => {
+    if (!userId) return;
+
+    const res = await axios.get(`http://localhost:8081/wallets/${userId}`);
+    setWallets(res.data);
+  };
 
   useEffect(() => {
-    localStorage.setItem("wallets", JSON.stringify(wallets));
-  }, [wallets]);
+    fetchWallets();
+  }, [userId]);
 
-  const bukaFormDompet = (wallet) => {
-    setSelectedWallet(wallet || "");
-    setNewWalletName(wallet || "");
+
+  /* ================= FORMAT ================= */
+  const formatRupiah = (angka) =>
+    angka.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+
+  const handleAmountChange = (e) => {
+    const val = e.target.value.replace(/\D/g, "");
+    setNewAmount(formatRupiah(val));
+  };
+
+
+  /* ================= OPEN FORM ================= */
+  const bukaForm = (wallet = null) => {
     setIsFormVisible(true);
+
+    if (wallet) {
+      setEditingId(wallet.id);
+      setNewWalletName(wallet.name);
+      setNewAmount(formatRupiah(wallet.balance));
+    } else {
+      setEditingId(null);
+      setNewWalletName("");
+      setNewAmount("");
+    }
   };
 
   const tutupForm = () => {
     setIsFormVisible(false);
-    setNewAmount("");
-    setNewWalletName("");
   };
 
-  const formatRupiah = (angka) => {
-    return angka.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
-  };
 
-  const handleAmountChange = (e) => {
-    const input = e.target.value.replace(/\D/g, "");
-    setNewAmount(formatRupiah(input));
-  };
-
-  const perbaruiDompet = async () => {
-    if (!newWalletName.trim() || !newAmount) {
-      alert("Masukkan nama dompet dan jumlah yang valid!");
-      return;
-    }
+  /* ================= SAVE ================= */
+  const simpanWallet = async () => {
 
     const amount = parseInt(newAmount.replace(/\./g, ""), 10);
 
-    try {
-      const response = await axios.post("http://localhost:8081/add-wallet", {
+    if (editingId) {
+      await axios.put(`http://localhost:8081/wallets/${editingId}`, {
         name: newWalletName,
         balance: amount,
       });
-
-      setWallets((prevWallets) => {
-        const walletIndex = prevWallets.findIndex(
-          (wallet) => wallet.name === newWalletName
-        );
-
-        if (walletIndex !== -1) {
-          const updatedWallets = [...prevWallets];
-          updatedWallets[walletIndex].balance = amount;
-          return updatedWallets;
-        } else {
-          return [...prevWallets, { name: newWalletName, balance: amount }];
-        }
+    } else {
+      await axios.post("http://localhost:8081/wallets", {  // 🔥 FIX endpoint
+        user_id: userId,                                   // 🔥 FIX kirim userId
+        name: newWalletName,
+        balance: amount,
       });
-
-      alert(response.data.Message);
-    } catch (error) {
-      console.error("Error adding wallet:", error);
-      alert("Gagal menyimpan data dompet ke server.");
     }
 
+    fetchWallets();
     tutupForm();
   };
 
+
+  /* ================= DELETE ================= */
+  const hapusWallet = async (id) => {
+    if (!window.confirm("Hapus dompet ini?")) return;
+
+    await axios.delete(`http://localhost:8081/wallets/${id}`);
+    fetchWallets();
+  };
+
+
+  /* ================= UI ================= */
   return (
     <section>
       <div className="containersaldo">
+
         <div className="saldo">
           <h2>Saldo Anda</h2>
           <p>
-            Rp.{" "}
+            Rp{" "}
             {wallets
-              .reduce((total, wallet) => total + wallet.balance, 0)
+              .reduce((t, w) => t + Number(w.balance), 0)
               .toLocaleString("id-ID")}
           </p>
         </div>
 
+
         <div className="daftar-dompet">
-          {wallets.map((wallet, index) => (
-            <div
-              key={index}
-              className="item-dompet"
-              onClick={() => bukaFormDompet(wallet.name)}
-            >
+          {wallets.map((wallet) => (
+            <div key={wallet.id} className="item-dompet">
               <span>{wallet.name}</span>
-              <span>Rp. {wallet.balance.toLocaleString("id-ID")}</span>
+              <span>Rp {Number(wallet.balance).toLocaleString("id-ID")}</span>
+
+              <button onClick={() => bukaForm(wallet)}>✏️</button>
+              <button onClick={() => hapusWallet(wallet.id)}>❌</button>
             </div>
           ))}
         </div>
 
-        <div className="tambah-dompet" onClick={() => bukaFormDompet("")}>
+
+        <div className="tambah-dompet" onClick={() => bukaForm()}>
           +
         </div>
       </div>
 
+
       {isFormVisible && (
         <div className="wadah-form">
           <div className="form">
-            <h3>Nama Dompet</h3>
             <input
-              type="text"
-              placeholder="Masukkan nama dompet"
               value={newWalletName}
               onChange={(e) => setNewWalletName(e.target.value)}
+              placeholder="Nama dompet"
             />
-            <h3>Nominal</h3>
+
             <input
-              type="text"
-              placeholder="Masukkan jumlah"
               value={newAmount}
               onChange={handleAmountChange}
+              placeholder="Nominal"
             />
-            <button onClick={perbaruiDompet}>Tambahkan</button>
+
+            <button onClick={simpanWallet}>Simpan</button>
             <button onClick={tutupForm}>Batal</button>
           </div>
         </div>

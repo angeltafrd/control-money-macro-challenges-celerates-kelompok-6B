@@ -1,114 +1,146 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect } from "react";
 
 function Riwayat() {
-  const [activeTab, setActiveTab] = useState('pemasukan');
-  const [incomeData, setIncomeData] = useState([]);
-  const [expenseData, setExpenseData] = useState([]);
+  const userId = localStorage.getItem("userId");
 
-  useEffect(() => {
-    const fetchIncome = async () => {
-      try {
-        const response = await fetch('http://localhost:8081/income');
-        const data = await response.json();
-        if (data.Message === 'Income data retrieved successfully') {
-          setIncomeData(data.Data);
-        }
-      } catch (error) {
-        console.error('Error fetching income data:', error);
-      }
-    };
+  const [transactions, setTransactions] = useState([]);
+  const [filterType, setFilterType] = useState("all");
+  const [search, setSearch] = useState("");
 
-    const fetchExpense = async () => {
-      try {
-        const response = await fetch('http://localhost:8081/expenses');
-        const data = await response.json();
-        if (data.Message === 'Expenses data retrieved successfully') {
-          setExpenseData(data.Data);
-        }
-      } catch (error) {
-        console.error('Error fetching expense data:', error);
-      }
-    };
+  /* ================= FETCH ================= */
+  const fetchTransactions = async () => {
+    if (!userId) return;
 
-    fetchIncome();
-    fetchExpense();
-  }, []);
+    const res = await fetch(
+      `http://localhost:8081/transactions/${userId}`
+    );
 
-  const handleTabChange = (tab) => {
-    setActiveTab(tab);
+    const data = await res.json();
+    setTransactions(data);
   };
 
+  useEffect(() => {
+    fetchTransactions();
+  }, []);
+
+  /* ================= FILTER ================= */
+  const filteredTransactions = transactions
+    .filter((t) =>
+      filterType === "all" ? true : t.type === filterType
+    )
+    .filter((t) =>
+      t.note?.toLowerCase().includes(search.toLowerCase())
+    );
+
+  /* ================= TOTAL ================= */
+  const totalIncome = filteredTransactions
+    .filter((t) => t.type === "income")
+    .reduce((a, b) => a + Number(b.amount), 0);
+
+  const totalExpense = filteredTransactions
+    .filter((t) => t.type === "expense")
+    .reduce((a, b) => a + Number(b.amount), 0);
+
+  const totalSelisih = totalIncome - totalExpense;
+
+  /* ================= FORMAT DATE ================= */
   const formatDate = (dateString) => {
     const date = new Date(dateString);
-    return date.toLocaleDateString('en-GB');
+    return date.toLocaleString("id-ID", {
+      day: "2-digit",
+      month: "long",
+      year: "numeric",
+      hour: "2-digit",
+      minute: "2-digit",
+    });
   };
 
   return (
-    <section id="tab4">
+    <section id="riwayat">
       <div className="container-center-riwayat">
         <div className="content-wrapper-riwayat">
-          <div className="w-80">
-            <div className="custom-header-riwayat">
-              <span
-                className={`active-riwayat ${activeTab === 'pemasukan' ? 'active' : ''}`}
-                onClick={() => handleTabChange('pemasukan')}
-              >
-                Pemasukan
-              </span>
-              <span
-                className={`active-riwayat ${activeTab === 'pengeluaran' ? 'active' : ''}`}
-                onClick={() => handleTabChange('pengeluaran')}
-              >
-                Pengeluaran
-              </span>
-            </div>
 
-            {activeTab === 'pemasukan' && (
-              <div className="custom-card-riwayat" id="pemasukanContainer">
-                <div className="custom-total-riwayat">
-                  <div className="fw-bold">Total Pemasukan</div>
-                  <div>
-                    Rp.{' '}
-                    {incomeData.reduce((total, item) => total + item.amount, 0).toLocaleString()}
-                  </div>
-                </div>
-                <div className="custom-item-riwayat">
-                  {incomeData.map((income, index) => (
-                    <div key={index}>
-                      <div className="d-flex justify-content-between mb-2">
-                        <span>{formatDate(income.date)}</span>
-                      </div>
-                      <div className="fw-bold mb-4">Rp. {income.amount.toLocaleString()}</div>
-                      <hr />
-                    </div>
-                  ))}
-                </div>
-              </div>
-            )}
+          {/* FILTER */}
+          <div className="filter-container">
+            <button
+              className={filterType === "all" ? "active-filter" : ""}
+              onClick={() => setFilterType("all")}
+            >
+              Semua
+            </button>
 
-            {activeTab === 'pengeluaran' && (
-              <div className="custom-card-riwayat" id="pengeluaranContainer">
-                <div className="custom-total-riwayat">
-                  <div className="fw-bold">Total Pengeluaran</div>
-                  <div>
-                    Rp.{' '}
-                    {expenseData.reduce((total, item) => total + item.amount, 0).toLocaleString()}
-                  </div>
-                </div>
-                <div className="custom-item-riwayat">
-                  {expenseData.map((expense, index) => (
-                    <div key={index}>
-                      <div className="d-flex justify-content-between mb-2">
-                        <span>{formatDate(expense.date)}</span>
-                      </div>
-                      <div className="fw-bold mb-4">Rp. {expense.amount.toLocaleString()}</div>
-                      <hr />
-                    </div>
-                  ))}
-                </div>
-              </div>
-            )}
+            <button
+              className={filterType === "income" ? "active-filter" : ""}
+              onClick={() => setFilterType("income")}
+            >
+              Pemasukan
+            </button>
+
+            <button
+              className={filterType === "expense" ? "active-filter" : ""}
+              onClick={() => setFilterType("expense")}
+            >
+              Pengeluaran
+            </button>
           </div>
+
+          {/* SEARCH */}
+          <input
+            type="text"
+            placeholder="Cari deskripsi..."
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            className="search-input"
+          />
+
+          {/* SUMMARY */}
+          <div className="summary-container">
+            <div>Total Pemasukan: Rp. {totalIncome.toLocaleString("id-ID")}</div>
+            <div>Total Pengeluaran: Rp. {totalExpense.toLocaleString("id-ID")}</div>
+            <div>Selisih: Rp. {totalSelisih.toLocaleString("id-ID")}</div>
+          </div>
+
+          {/* LIST */}
+          <div className="list-container">
+            {filteredTransactions.length === 0 && (
+              <p>Tidak ada transaksi.</p>
+            )}
+
+            {filteredTransactions.map((item) => (
+              <div
+                key={item.id}
+                className={`transaction-card ${
+                  item.type === "income"
+                    ? "income-card"
+                    : "expense-card"
+                }`}
+              >
+                <div className="transaction-header">
+                  <span>{formatDate(item.date)}</span>
+                  <span>{item.wallet_name}</span>
+                </div>
+
+                <div className="transaction-description">
+                  {item.note || "Tanpa deskripsi"}
+                </div>
+
+                <div className="transaction-body">
+                  <span
+                    className={
+                      item.type === "income"
+                        ? "amount-income"
+                        : "amount-expense"
+                    }
+                  >
+                    {item.type === "income" ? "⬆" : "⬇"} Rp.{" "}
+                    {Number(item.amount).toLocaleString("id-ID")}
+                  </span>
+                </div>
+
+              </div>
+            ))}
+          </div>
+
         </div>
       </div>
     </section>

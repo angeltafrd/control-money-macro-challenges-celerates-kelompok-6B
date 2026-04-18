@@ -1,38 +1,304 @@
-.App {
-  text-align: center;
+/* ================= RESET ================= */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
 }
 
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
-}
-
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
-}
-
-.App-header {
-  background-color: #282c34;
+/* ================= ROOT ================= */
+body {
+  font-family: 'Segoe UI', sans-serif;
+  background: linear-gradient(135deg, #5f2eea, #7b3fe4);
   min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
   color: white;
 }
 
-.App-link {
-  color: #61dafb;
+/* ================= SECTION ================= */
+#kelolaGrafik {
+  width: 100%;
+  min-height: 100vh;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;   /* 🔥 PAKSA TENGAH */
+  justify-content: flex-start;
+
+  padding: 40px 20px;
 }
 
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+/* ================= SUMMARY ================= */
+.kelola-summary {
+  text-align: center;
+  margin-bottom: 30px;
+}
+
+/* ================= CHART ================= */
+.kelola-charts {
+  width: 100%;
+  max-width: 1100px;
+
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 20px;
+
+  margin-bottom: 40px;
+}
+
+.kelola-chart-card {
+  background: white;
+  color: black;
+  border-radius: 16px;
+  padding: 20px;
+  height: 240px;
+}
+
+/* ================= TRANSAKSI ================= */
+.container-grafik {
+  width: 100%;
+  max-width: 500px;
+
+  margin: 0 auto;   /* 🔥 WAJIB biar center */
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+
+  padding: 20px;
+  border-radius: 16px;
+  background: rgba(255,255,255,0.15);
+}
+
+/* item transaksi */
+.container-grafik div {
+  width: 100%;
+  background: rgba(255,255,255,0.25);
+  padding: 8px;
+  border-radius: 8px;
+}
+
+/* tombol tambah */
+.container-grafik button {
+  margin-top: 15px;
+  padding: 10px 16px;
+  border-radius: 8px;
+  border: none;
+  font-weight: bold;
+  cursor: pointer;
+  background: white;
+  color: #5f2eea;
+}
+
+/* ================= POPUP FIX TENGAH ================= */
+.popup-overlay {
+  position: fixed;   /* 🔥 jangan absolute */
+  inset: 0;
+
+  background: rgba(0,0,0,0.5);
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  z-index: 9999;
+}
+
+.popup-box {
+  background: white;
+  color: black;
+
+  padding: 30px;
+  border-radius: 14px;
+
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+
+  min-width: 220px;
+}
+
+.popup-box button {
+  padding: 8px;
+  border-radius: 6px;
+  border: none;
+  cursor: pointer;
+}
+
+.close-btn {
+  background: #eee;
+}
+
+/* ================= LINK ================= */
+a {
+  color: white;
+  font-weight: bold;
+  margin-top: 20px;
+}
+
+.inputkelola-form-group select {
+  width: 100%;
+  padding: 12px 14px;
+  border-radius: 10px;
+  border: none;
+  background: rgba(255, 255, 255, 0.15);
+  color: white;
+  font-size: 14px;
+  outline: none;
+}
+
+.inputkelola-form-group select option {
+  color: black;
+}
+
+.card-tahun {
+  text-align: left;
+  align-items: flex-start; /* kalau dia flex */
+}
+
+.input-group-masuk input {
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.password-container-masuk {
+  position: relative;
+  width: 100%;
+}
+
+.password-container-masuk input {
+  width: 100%;
+  padding-right: 40px; /* 🔥 ruang untuk icon */
+  box-sizing: border-box;
+}
+
+.password-container-masuk i {
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  cursor: pointer;
+  font-size: 16px;
+  color: white;
+}
+/* ================= FORM PEMASUKAN & PENGELUARAN (CLEAN) ================= */
+
+/* layout form 2 kolom */
+#pemasukan form,
+#pengeluaran form {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+  width: 600px;
+}
+
+/* form group */
+.inputkelola-form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+/* input, select, textarea (SAMAKAN SEMUA) */
+#pemasukan input,
+#pemasukan select,
+#pemasukan textarea,
+#pengeluaran input,
+#pengeluaran select,
+#pengeluaran textarea {
+  width: 100%;
+  padding: 12px;
+  border-radius: 12px;
+  border: none;
+  outline: none;
+
+  background: rgba(255, 255, 255, 0.15);
+  color: white;
+}
+
+/* dropdown option */
+#pemasukan select option,
+#pengeluaran select option {
+  color: black;
+}
+
+/* textarea full width */
+.inputkelola-full-width {
+  grid-column: span 2;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+/* tinggi textarea */
+#pemasukan textarea,
+#pengeluaran textarea {
+  min-height: 130px;
+  resize: none;
+}
+
+/* placeholder */
+#pemasukan input::placeholder,
+#pengeluaran input::placeholder,
+#pemasukan textarea::placeholder,
+#pengeluaran textarea::placeholder {
+  color: white;
+  opacity: 1;
+}
+
+/* tombol */
+.btn-kelola {
+  width: 150px;
+  height: 40px;
+  background: #4400ff;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+/* layout form + gambar */
+.inputkelola-form-and-illustration {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 40px;
+}
+
+/* gambar */
+.inputkelola-illustration img {
+  width: 300px;
+}
+/* ================= BACK BUTTON GLOBAL ================= */
+
+.btn-back-fixed {
+  position: fixed;
+  top: 90px; /* sesuaikan sama navbar */
+  left: 20px;
+
+  width: 45px;
+  height: 45px;
+
+  border-radius: 50%;
+  border: none;
+
+  background: rgba(255, 255, 255, 0.2);
+  backdrop-filter: blur(10px);
+
+  color: white;
+  font-size: 20px;
+  font-weight: bold;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  cursor: pointer;
+  z-index: 999;
+
+  transition: all 0.2s ease;
+}
+
+.btn-back-fixed:hover {
+  background: rgba(255, 255, 255, 0.35);
+  transform: scale(1.05);
 }
